@@ -8,15 +8,21 @@ export class AgentController {
     private bookingService: AppDependencies['bookingService'];
     private llmService: AppDependencies['llmService'];
     private safetyService: AppDependencies['safetyService'];
+    private locationScoreService: AppDependencies['locationScoreService'];
     private searchUseCase: SearchListingsUseCase;
 
     constructor(dependencies: AppDependencies) {
         this.bookingService = dependencies.bookingService;
         this.llmService = dependencies.llmService;
         this.safetyService = dependencies.safetyService;
+        this.locationScoreService = dependencies.locationScoreService;
         this.searchUseCase = new SearchListingsUseCase({
             bookingService: this.bookingService,
-            llmService: this.llmService
+            llmService: this.llmService,
+            anchors: {
+                events: {},
+                coworking: {}
+            }
         });
     }
 
@@ -64,10 +70,54 @@ export class AgentController {
 
     /**
      * @swagger
+     * /api/location-score:
+     *   post:
+     *     summary: Evaluate proximity score between housing and target location
+     *     description: Uses OpenRouteService for walking metrics and LLM for scoring.
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             $ref: '#/components/schemas/LocationScoreRequest'
+     *     responses:
+     *       200:
+     *         description: Location score result
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/LocationScore'
+     *       400:
+     *         description: Missing coordinates
+     *       500:
+     *         description: Internal server error
+     */
+    async checkLocationScore(req: Request, res: Response) {
+        try {
+            const { housing_coords, target_coords } = req.body;
+            if (!housing_coords || !target_coords) {
+                return res.status(400).json({ error: "Housing and target coordinates are required" });
+            }
+
+            const score = await this.locationScoreService.checkLocationScore(housing_coords, target_coords);
+            res.json(score);
+        } catch (error) {
+            console.error('Location score check error:', error);
+            res.status(500).json({ error: "Internal Server Error" });
+        }
+    }
+
+    /**
+     * @swagger
      * /api/llm-search:
      *   post:
      *     summary: Search for listings from a natural language request
-     *     description: Uses the LLM to parse a natural language request into structured search criteria, then queries listings.
+     *     description: End-to-end flow:
+     *       - Uses the LLM to parse a natural language request into structured search criteria.
+     *       - Searches potential listings.
+     *       - Mocks coworking proximity per listing.
+     *       - Evaluates safety of each listing.
+     *       - Optionally evaluates distance to an event if provided.
      *     requestBody:
      *       required: true
      *       content:
@@ -78,9 +128,12 @@ export class AgentController {
      *               message:
      *                 type: string
      *                 example: "We’re 6 people, need Lisbon in early May, budget $200 per night"
+     *               event:
+     *                 $ref: '#/components/schemas/EventLocation'
+     *                 description: Optional event location used for proximity scoring.
      *     responses:
      *       200:
-     *         description: Listings derived from LLM-parsed requirements
+     *         description: Scored listings derived from LLM-parsed requirements
      *         content:
      *           application/json:
      *             schema:
@@ -88,10 +141,27 @@ export class AgentController {
      *               properties:
      *                 derivedCriteria:
      *                   $ref: '#/components/schemas/SearchCriteria'
-     *                 listings:
+     *                 overallRating:
+     *                   type: number
+     *                 results:
      *                   type: array
      *                   items:
-     *                     $ref: '#/components/schemas/Listing'
+     *                     type: object
+     *                     properties:
+     *                       listing:
+     *                         $ref: '#/components/schemas/Listing'
+     *                       scores:
+     *                         type: object
+     *                         properties:
+     *                           overall:
+     *                             type: number
+     *                           safety:
+     *                             type: number
+     *                           coworkingProximity:
+     *                             type: number
+     *                           eventProximity:
+     *                             type: number
+     *                             nullable: true
      *       400:
      *         description: Invalid input or unable to derive search parameters
      *       500:
@@ -99,18 +169,20 @@ export class AgentController {
      */
     async llmSearch(req: Request, res: Response) {
         try {
-            const { message } = req.body;
+            const { message, event } = req.body;
             if (!message) {
                 return res.status(400).json({ error: "Message is required" });
             }
 
-            const { derivedCriteria, listings } = await this.searchUseCase.searchFromMessage(message);
+            const { derivedCriteria, overallRating, results } =
+                await this.searchUseCase.searchFromMessage(message, { event });
 
             res.json({
                 message: "Listings found",
                 derivedCriteria,
-                count: listings.length,
-                listings
+                overallRating,
+                count: results.length,
+                results
             });
         } catch (error) {
             console.error(error);
