@@ -1,0 +1,103 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+/**
+ * @title TeamManager
+ * @dev Manages teams, ownership, membership commitments, and permissions.
+ */
+contract TeamManager {
+    // --- Core Storage ---
+
+    // Tracks the total number of teams to generate unique team IDs.
+    uint256 public teamCounter;
+
+    // Mapping from a team ID to the address of its owner.
+    // The owner has exclusive rights to manage the team.
+    mapping(uint256 => address) public teamOwner;
+
+    // Mapping to track pending invitations for users to join a team.
+    // A boolean flag indicates whether a user has an active invite for a specific team.
+    mapping(uint256 => mapping(address => bool)) public pendingInvites;
+
+    // Mapping from a team ID to its membership commitment root.
+    // This root is a cryptographic commitment (e.g., Merkle root) to the team's member list.
+    mapping(uint256 => bytes32) public teamCommitment;
+
+    // --- Events ---
+
+    // Emitted when a new team is created.
+    event TeamCreated(uint256 indexed teamId, address indexed owner);
+
+    // Emitted when a user is invited to join a team.
+    event Invited(uint256 indexed teamId, address indexed user);
+
+    // Emitted when a user accepts an invitation to join a team.
+    event Accepted(uint256 indexed teamId, address indexed user);
+
+    // Emitted when a member is removed from a team.
+    event MemberRemoved(uint256 indexed teamId, address indexed user);
+
+    // Emitted when a team's membership commitment is updated.
+    event CommitmentUpdated(uint256 indexed teamId, bytes32 newRoot);
+
+    // --- Constructor ---
+
+    constructor() {
+        // The team counter starts at 0. The first team created will have ID 1.
+        teamCounter = 0;
+    }
+
+    // --- Placeholder Functions ---
+
+    /**
+     * @dev Creates a new team and assigns ownership to the caller.
+     * @return The ID of the newly created team.
+     */
+    function createTeam() external returns (uint256) {
+        // Placeholder for team creation logic.
+        // It should increment the team counter, assign ownership,
+        // and emit a TeamCreated event.
+        return 0;
+    }
+
+    /**
+     * @dev Invites a user to join a team.
+     * @param _teamId The ID of the team.
+     * @param _user The address of the user to invite.
+     */
+    function inviteUser(uint256 _teamId, address _user) external {
+        // Placeholder for invitation logic.
+        // It should verify that the caller is the team owner
+        // and then set the pending invite status.
+    }
+
+    /**
+     * @dev Accepts an invitation to join a team.
+     * @param _teamId The ID of the team.
+     */
+    function acceptInvite(uint256 _teamId) external {
+        // Placeholder for accepting an invitation.
+        // It should verify that the caller has a pending invite
+        // and then handle the acceptance logic.
+    }
+
+    /**
+     * @dev Removes a member from a team.
+     * @param _teamId The ID of the team.
+     * @param _user The address of the member to remove.
+     */
+    function removeMember(uint256 _teamId, address _user) external {
+        // Placeholder for member removal logic.
+        // It should verify that the caller is the team owner.
+    }
+
+    /**
+     * @dev Updates the membership commitment root for a team.
+     * @param _teamId The ID of the team.
+     * @param _newRoot The new commitment root.
+     */
+    function updateCommitment(uint256 _teamId, bytes32 _newRoot) external {
+        // Placeholder for updating the commitment root.
+        // It should verify that the caller is the team owner.
+    }
+}
