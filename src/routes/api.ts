@@ -1,10 +1,16 @@
 import { Router } from 'express';
 import { AgentController } from '../controllers/AgentController.js';
+import { AppDependencies } from '../container.js';
 
-const router = Router();
+export function createApiRoutes(dependencies: AppDependencies) {
+    const router = Router();
+    const controller = new AgentController(dependencies);
 
-router.get('/prompts', AgentController.getPrompts);
-router.post('/search', AgentController.search);
-router.post('/booking', AgentController.createBooking);
+    // We need to bind the methods to the controller instance
+    router.get('/prompts', controller.getPrompts.bind(controller));
+    router.post('/requirements', controller.parseRequirements.bind(controller));
+    router.post('/search', controller.search.bind(controller));
+    router.post('/booking', controller.createBooking.bind(controller));
 
-export default router;
+    return router;
+}

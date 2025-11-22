@@ -4,20 +4,26 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { z } from 'zod';
 
-import { HackerHouseBookingService } from '../services/HackerHouseBookingService.js';
-import { SearchCriteriaSchema, BookingDetailsSchema, ListingSchema, BookingResultSchema } from '../schemas/bookingSchemas.js';
+import { AppDependencies } from '../container.js';
+import { SearchCriteriaSchema, BookingDetailsSchema, ListingSchema, BookingResultSchema, TravelRequirementsSchema } from '../schemas/bookingSchemas.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const bookingService = new HackerHouseBookingService();
-
 const getPromptContent = (filename: string) => {
-    const promptPath = path.join(__dirname, '../prompts', filename);
+    const promptPath = path.join(process.cwd(), 'src/prompts', filename);
     return fs.readFileSync(promptPath, 'utf-8');
 };
 
 export class AgentController {
+    private bookingService: AppDependencies['bookingService'];
+    private llmService: AppDependencies['llmService'];
+
+    constructor(dependencies: AppDependencies) {
+        this.bookingService = dependencies.bookingService;
+        this.llmService = dependencies.llmService;
+    }
+
     /**
      * @swagger
      * /api/prompts:
@@ -39,7 +45,7 @@ export class AgentController {
      *                 assistant:
      *                   type: string
      */
-    static getPrompts(req: Request, res: Response) {
+    getPrompts(req: Request, res: Response) {
         try {
             const systemPrompt = getPromptContent('systemPrompt.md');
             const developerPrompt = getPromptContent('developerPrompt.md');
@@ -53,6 +59,47 @@ export class AgentController {
         } catch (error) {
             console.error('Error reading prompts:', error);
             res.status(500).json({ error: "Failed to load prompts" });
+        }
+    }
+
+    /**
+     * @swagger
+     * /api/requirements:
+     *   post:
+     *     summary: Parse travel requirements
+     *     description: Parse natural language user request into structured travel requirements.
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             type: object
+     *             properties:
+     *               message:
+     *                 type: string
+     *                 example: "We’re 12 people, thinking Portugal or Spain, sometime mid-May..."
+     *     responses:
+     *       200:
+     *         description: Structured travel requirements
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/TravelRequirements'
+     *       500:
+     *         description: Internal server error
+     */
+    async parseRequirements(req: Request, res: Response) {
+        try {
+            const { message } = req.body;
+            if (!message) {
+                return res.status(400).json({ error: "Message is required" });
+            }
+
+            const requirements = await this.llmService.parseRequirements(message);
+            res.json(requirements);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: "Internal Server Error" });
         }
     }
 
@@ -80,7 +127,7 @@ export class AgentController {
      *       500:
      *         description: Internal server error
      */
-    static async search(req: Request, res: Response) {
+    async search(req: Request, res: Response) {
         try {
             // Validate request body using Zod
             const criteria = SearchCriteriaSchema.parse(req.body);
@@ -91,7 +138,7 @@ export class AgentController {
                 return res.status(400).json({ error: "Missing required backend fields: city, dates, bedrooms" });
             }
 
-            const listings = await bookingService.searchListings(criteria);
+            const listings = await this.bookingService.searchListings(criteria);
 
             // Sort listings based on the "Developer Prompt" logic
             listings.sort((a, b) => {
@@ -139,12 +186,12 @@ export class AgentController {
      *       500:
      *         description: Internal server error
      */
-    static async createBooking(req: Request, res: Response) {
+    async createBooking(req: Request, res: Response) {
         try {
             // Validate request body using Zod
             const bookingDetails = BookingDetailsSchema.parse(req.body);
 
-            const result = await bookingService.createBooking(bookingDetails);
+            const result = await this.bookingService.createBooking(bookingDetails);
             res.json(result);
         } catch (error) {
             console.error(error);
