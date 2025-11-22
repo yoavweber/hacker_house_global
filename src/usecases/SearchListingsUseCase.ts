@@ -87,13 +87,20 @@ export class SearchListingsUseCase {
     }
 
     async searchFromCriteria(criteria: SearchCriteria) {
-        const event = this.resolveEvent(criteria);
-        const coworkingSpaces = this.resolveCoworkingSpaces(criteria.city);
+        const event = this.tryResolveEvent(criteria);
+        const coworkingSpaces = this.tryResolveCoworkingSpaces(criteria.city);
 
         const listings = await this.bookingService.searchListings(criteria);
-        this.attachDistances(listings, event);
 
-        await this.enrichWithInsights(listings, event, coworkingSpaces);
+        // Only attach distances and enrich if we have event and coworking data
+        if (event) {
+            this.attachDistances(listings, event);
+        }
+
+        if (event && coworkingSpaces.length > 0) {
+            await this.enrichWithInsights(listings, event, coworkingSpaces);
+        }
+
         this.sortListings(listings);
 
         return {
@@ -196,6 +203,24 @@ export class SearchListingsUseCase {
         throw new HttpError(400, 'Event location is required for proximity analysis');
     }
 
+    /**
+     * Try to resolve event location, but return null if not available.
+     * Used for optional event enrichment in basic searches.
+     */
+    private tryResolveEvent(criteria: SearchCriteria): EventLocation | null {
+        if (criteria.events && criteria.events.length > 0) {
+            return criteria.events[0];
+        }
+
+        const key = (criteria.city || '').toLowerCase();
+        const anchor = this.anchors.events[key];
+        if (anchor) {
+            return anchor;
+        }
+
+        return null;
+    }
+
     private resolveCoworkingSpaces(city: string): CoworkingSpace[] {
         const key = (city || '').toLowerCase();
         const spaces = this.anchors.coworking[key];
@@ -205,6 +230,21 @@ export class SearchListingsUseCase {
         }
 
         throw new HttpError(400, 'Coworking spaces are required for proximity analysis');
+    }
+
+    /**
+     * Try to resolve coworking spaces, but return empty array if not available.
+     * Used for optional coworking enrichment in basic searches.
+     */
+    private tryResolveCoworkingSpaces(city: string): CoworkingSpace[] {
+        const key = (city || '').toLowerCase();
+        const spaces = this.anchors.coworking[key];
+
+        if (spaces && spaces.length > 0) {
+            return spaces;
+        }
+
+        return [];
     }
 
     private attachDistances(listings: Listing[], event: EventLocation) {
@@ -246,7 +286,12 @@ export class SearchListingsUseCase {
     private sortListings(listings: Listing[]) {
         listings.sort((a, b) => {
             if (b.safetyScore !== a.safetyScore) return b.safetyScore - a.safetyScore;
-            if (a.distanceToEvent !== b.distanceToEvent) return a.distanceToEvent - b.distanceToEvent;
+
+            // Only sort by distance if both have distanceToEvent defined
+            const aDistance = a.distanceToEvent ?? Number.MAX_SAFE_INTEGER;
+            const bDistance = b.distanceToEvent ?? Number.MAX_SAFE_INTEGER;
+            if (aDistance !== bDistance) return aDistance - bDistance;
+
             if (b.bedrooms !== a.bedrooms) return b.bedrooms - a.bedrooms;
             if (a.price !== b.price) return a.price - b.price;
             return b.workspaceScore - a.workspaceScore;
