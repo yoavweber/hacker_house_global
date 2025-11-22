@@ -1,12 +1,24 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import { createApiRoutes } from './routes/api.js';
 import { getOpenApiComponents } from './schemas/bookingSchemas.js';
 import { createContainer } from './container.js';
 
-dotenv.config();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Load .env from project root (not from dist/)
+const envPath = path.resolve(process.cwd(), '.env');
+dotenv.config({ path: envPath });
+
+// Log environment variable status (without exposing values)
+console.log('Environment variables loaded from:', envPath);
+console.log('SEARCHAPI_IO_API_KEY:', process.env.SEARCHAPI_IO_API_KEY ? '✓ Set' : '✗ Not set');
+console.log('OPENAI_API_KEY:', process.env.OPENAI_API_KEY ? '✓ Set' : '✗ Not set');
 
 const app = express();
 const port = process.env.PORT || 3000;
