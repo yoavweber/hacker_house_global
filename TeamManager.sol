@@ -51,13 +51,26 @@ contract TeamManager {
 
     /**
      * @dev Creates a new team and assigns ownership to the caller.
+     *      - Increments the team counter to generate a unique ID.
+     *      - Assigns the caller as the team owner.
+     *      - Initializes an empty membership commitment.
+     *      - Emits a {TeamCreated} event.
      * @return The ID of the newly created team.
      */
     function createTeam() external returns (uint256) {
-        // Placeholder for team creation logic.
-        // It should increment the team counter, assign ownership,
-        // and emit a TeamCreated event.
-        return 0;
+        teamCounter++;
+        uint256 newTeamId = teamCounter;
+
+        // Assign the caller as the owner of the new team.
+        teamOwner[newTeamId] = msg.sender;
+
+        // Initialize with an empty commitment root.
+        teamCommitment[newTeamId] = bytes32(0);
+
+        // Emit an event to notify off-chain services of the new team.
+        emit TeamCreated(newTeamId, msg.sender);
+
+        return newTeamId;
     }
 
     /**
