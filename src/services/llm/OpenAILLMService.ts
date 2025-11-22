@@ -14,7 +14,6 @@ export class OpenAILLMService implements LLMProvider {
     private systemPrompt: string;
     private developerPrompt: string;
     private safetyPrompt: string;
-    private locationScorePrompt: string;
 
     constructor() {
         const apiKey = process.env.OPENAI_API_KEY;
@@ -29,13 +28,11 @@ export class OpenAILLMService implements LLMProvider {
             this.systemPrompt = fs.readFileSync(path.join(promptsDir, 'systemPrompt.md'), 'utf-8');
             this.developerPrompt = fs.readFileSync(path.join(promptsDir, 'developerPrompt.md'), 'utf-8');
             this.safetyPrompt = fs.readFileSync(path.join(promptsDir, 'safetyPrompt.md'), 'utf-8');
-            this.locationScorePrompt = fs.readFileSync(path.join(promptsDir, 'locationScorePrompt.md'), 'utf-8');
         } catch (error) {
             console.error('Failed to load prompts:', error);
             this.systemPrompt = "You are a helpful assistant.";
             this.developerPrompt = "";
             this.safetyPrompt = "";
-            this.locationScorePrompt = "";
         }
     }
 
@@ -180,53 +177,4 @@ export class OpenAILLMService implements LLMProvider {
         }
     }
 
-    async evaluateLocationScore(
-        walkingDistance: number,
-        walkingTime: number,
-        transitTime: number
-    ): Promise<import('../../schemas/bookingSchemas.js').LocationScore> {
-        console.log(`OpenAILLMService: Evaluating location score for walking: ${walkingDistance}m, ${walkingTime}min, transit: ${transitTime}min`);
-
-        const messages = [
-            {
-                role: "system" as const,
-                content: this.locationScorePrompt
-            },
-            {
-                role: "user" as const,
-                content: JSON.stringify({
-                    walking_distance_meters: walkingDistance,
-                    walking_time_minutes: walkingTime,
-                    transit_time_minutes: transitTime
-                }, null, 2)
-            }
-        ];
-
-        try {
-            const completion = await this.openai.chat.completions.create({
-                model: "gpt-4o",
-                messages,
-                response_format: { type: "json_object" }
-            });
-
-            const content = completion.choices[0].message.content;
-            if (!content) {
-                throw new Error("OpenAI returned empty content for location score evaluation");
-            }
-
-            const parsed = JSON.parse(content);
-            const { LocationScoreSchema } = await import('../../schemas/bookingSchemas.js');
-            const validation = LocationScoreSchema.safeParse(parsed);
-
-            if (!validation.success) {
-                console.error('LLM evaluateLocationScore returned invalid shape', validation.error.flatten());
-                throw new Error('LLM location score evaluation response failed validation');
-            }
-
-            return validation.data;
-        } catch (error) {
-            console.error('OpenAI location score evaluation Error:', error);
-            throw error;
-        }
-    }
 }
