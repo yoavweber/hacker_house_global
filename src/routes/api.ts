@@ -7,10 +7,9 @@ export function createApiRoutes(dependencies: AppDependencies) {
     const controller = new AgentController(dependencies);
 
     // We need to bind the methods to the controller instance
-    router.get('/prompts', controller.getPrompts.bind(controller));
-    router.post('/requirements', controller.parseRequirements.bind(controller));
+    router.post('/llm-search', controller.llmSearch.bind(controller));
     router.post('/search', controller.search.bind(controller));
-    router.post('/booking', controller.createBooking.bind(controller));
+    router.post('/safety', controller.checkSafety.bind(controller));
 
     return router;
 }
