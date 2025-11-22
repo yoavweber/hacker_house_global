@@ -1,18 +1,18 @@
 import axios from 'axios';
-import { BookingProvider, SearchCriteria, Listing, BookingDetails, BookingResult } from '../../interfaces/BookingProvider.js';
+import { BookingProvider, SearchCriteria, Listing, BookingDetails, BookingResult } from '../interfaces/BookingProvider.js';
 
-export class AirbnbService implements BookingProvider {
+export class Client implements BookingProvider {
     private apiUrl: string;
     private apiKey: string;
 
     constructor() {
         this.apiUrl = 'https://www.searchapi.io/api/v1';
         this.apiKey = process.env.SEARCHAPI_IO_API_KEY || '';
-        console.log('AirbnbService initialized. API Key present:', !!this.apiKey);
+        console.log('Client initialized. API Key present:', !!this.apiKey);
     }
 
     async searchListings(criteria: SearchCriteria): Promise<Listing[]> {
-        console.log('AirbnbService: Searching listings for', criteria.city);
+        console.log('Client: Searching listings for', criteria.city);
 
         if (!this.apiKey) {
             throw new Error('SEARCHAPI_IO_API_KEY is not set. Cannot query Airbnb search API.');
@@ -33,7 +33,7 @@ export class AirbnbService implements BookingProvider {
                 if (criteria.filters.maxPrice) params.price_max = criteria.filters.maxPrice;
             }
 
-            console.log('AirbnbService: Making API request with params:', { ...params, apiKey: this.apiKey ? '***' : 'MISSING' });
+            console.log('Client: Making API request with params:', { ...params, apiKey: this.apiKey ? '***' : 'MISSING' });
 
             const response = await axios.get(`${this.apiUrl}/search`, {
                 params,
@@ -42,8 +42,8 @@ export class AirbnbService implements BookingProvider {
                 }
             });
 
-            console.log('AirbnbService: API response status:', response.status);
-            console.log('AirbnbService: API response data keys:', Object.keys(response.data || {}));
+            console.log('Client: API response status:', response.status);
+            console.log('Client: API response data keys:', Object.keys(response.data || {}));
 
             // Try different possible response structures
             let results: any[] = [];
@@ -59,10 +59,10 @@ export class AirbnbService implements BookingProvider {
                 results = response.data.properties;
             } else {
                 // Log the full structure to debug
-                console.log('AirbnbService: Unexpected response structure:', JSON.stringify(response.data, null, 2).substring(0, 1000));
+                console.log('Client: Unexpected response structure:', JSON.stringify(response.data, null, 2).substring(0, 1000));
             }
 
-            console.log('AirbnbService: Found', results.length, 'results');
+            console.log('Client: Found', results.length, 'results');
 
             return results.map((property: any) => ({
                 id: property.id,
@@ -93,7 +93,7 @@ export class AirbnbService implements BookingProvider {
     }
 
     async createBooking(bookingDetails: BookingDetails): Promise<BookingResult> {
-        console.log('AirbnbService: Creating booking (mock)...', bookingDetails);
+        console.log('Client: Creating booking (mock)...', bookingDetails);
 
         // The SearchAPI.io is read-only for search. We mock the booking.
         return {
@@ -103,3 +103,4 @@ export class AirbnbService implements BookingProvider {
         };
     }
 }
+

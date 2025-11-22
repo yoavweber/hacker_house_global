@@ -1,7 +1,7 @@
 import { BookingProvider } from './interfaces/BookingProvider.js';
 import { LLMProvider } from './interfaces/LLMProvider.js';
 import { OpenAILLMService } from './services/llm/OpenAILLMService.js';
-import { AirbnbService } from './services/booking/AirbnbService.js';
+import { Client } from './booking/AirBnbClient.js';
 
 import { SafetyService } from './services/safety/SafetyService.js';
 import { LocationScoreService } from './services/location/LocationScoreService.js';
@@ -16,7 +16,7 @@ export interface AppDependencies {
 export function createContainer(): AppDependencies {
     // Here we can add logic to switch implementations based on env vars
 
-    const bookingService = new AirbnbService();
+    const bookingService = new Client();
     // const bookingService = new BookingDotComService();
 
     const llmService = new OpenAILLMService();
