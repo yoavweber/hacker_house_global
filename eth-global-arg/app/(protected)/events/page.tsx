@@ -1,5 +1,6 @@
 "use client"
 
+import { BackButton } from "@/components/back-button"
 import { PageHeader } from "@/components/page-header"
 import { Badge } from "@/components/ui/badge"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
@@ -14,7 +15,7 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import { useEffect, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 
 // Mock data - replace with real API data later
 const mockEvents = [
@@ -25,7 +26,7 @@ const mockEvents = [
     location: "Buenos Aires, Argentina",
     date: "Dec 15-17, 2024",
     dateStart: "2024-12-15",
-    image: "/spr_catbig_w_capsule.gif",
+    image: "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&h=400&fit=crop",
     description: "The biggest Ethereum hackathon in Latin America",
     participants: 500,
     prizes: "$100,000",
@@ -39,7 +40,7 @@ const mockEvents = [
     location: "Bangkok, Thailand",
     date: "Nov 12-15, 2024",
     dateStart: "2024-11-12",
-    image: "/spr_catbig_w_capsule.gif",
+    image: "https://images.unsplash.com/photo-1622630998477-20aa696ecb05?w=400&h=400&fit=crop",
     description: "The Ethereum developer conference",
     participants: 3000,
     prizes: "N/A",
@@ -54,7 +55,7 @@ const mockEvents = [
     location: "Denver, USA",
     date: "Feb 28 - Mar 3, 2025",
     dateStart: "2025-02-28",
-    image: "/spr_catbig_w_capsule.gif",
+    image: "https://images.unsplash.com/photo-1620321023374-d1a68fbc720d?w=400&h=400&fit=crop",
     description: "The largest Web3 #BUIDLathon in the world",
     participants: 15000,
     prizes: "$500,000",
@@ -68,7 +69,7 @@ const mockEvents = [
     location: "Prague, Czech Republic",
     date: "May 30 - Jun 1, 2025",
     dateStart: "2025-05-30",
-    image: "/spr_catbig_w_capsule.gif",
+    image: "https://images.unsplash.com/photo-1644361566696-3d442b5b482a?w=400&h=400&fit=crop",
     description: "Ethereum hackathon in the heart of Europe",
     participants: 800,
     prizes: "$150,000",
@@ -82,7 +83,7 @@ const mockEvents = [
     location: "Brussels, Belgium",
     date: "Jul 8-11, 2025",
     dateStart: "2025-07-08",
-    image: "/spr_catbig_w_capsule.gif",
+    image: "https://images.unsplash.com/photo-1642104704074-907c0698cbd9?w=400&h=400&fit=crop",
     description: "Ethereum Community Conference",
     participants: 2000,
     prizes: "$200,000",
@@ -96,7 +97,7 @@ const mockEvents = [
     location: "London, UK",
     date: "Mar 20-22, 2025",
     dateStart: "2025-03-20",
-    image: "/spr_catbig_w_capsule.gif",
+    image: "https://images.unsplash.com/photo-1621416894569-0f39ed31d247?w=400&h=400&fit=crop",
     description: "Building the future of Ethereum in London",
     participants: 1200,
     prizes: "$250,000",
@@ -110,7 +111,7 @@ const mockEvents = [
     location: "Tokyo, Japan",
     date: "Apr 15-17, 2025",
     dateStart: "2025-04-15",
-    image: "/spr_catbig_w_capsule.gif",
+    image: "https://images.unsplash.com/photo-1639762681057-408e52192e55?w=400&h=400&fit=crop",
     description: "Asia's premier Web3 conference",
     participants: 2500,
     prizes: "$180,000",
@@ -124,7 +125,7 @@ const mockEvents = [
     location: "Istanbul, Turkey",
     date: "Jun 10-12, 2025",
     dateStart: "2025-06-10",
-    image: "/spr_catbig_w_capsule.gif",
+    image: "https://images.unsplash.com/photo-1644361567057-22d22d3f6688?w=400&h=400&fit=crop",
     description: "Bridging continents through blockchain",
     participants: 900,
     prizes: "$120,000",
@@ -139,7 +140,7 @@ const mockEvents = [
     location: "San Francisco, USA",
     date: "Oct 15-17, 2024",
     dateStart: "2024-10-15",
-    image: "/spr_catbig_w_capsule.gif",
+    image: "https://images.unsplash.com/photo-1622630998477-20aa696ecb05?w=400&h=400&fit=crop",
     description: "Innovation hub in the heart of Silicon Valley",
     participants: 1800,
     prizes: "$300,000",
@@ -153,7 +154,7 @@ const mockEvents = [
     location: "Berlin, Germany",
     date: "Sep 10-14, 2024",
     dateStart: "2024-09-10",
-    image: "/spr_catbig_w_capsule.gif",
+    image: "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&h=400&fit=crop",
     description: "Europe's largest blockchain gathering",
     participants: 3500,
     prizes: "N/A",
@@ -167,7 +168,7 @@ const mockEvents = [
     location: "Seoul, South Korea",
     date: "Aug 20-22, 2024",
     dateStart: "2024-08-20",
-    image: "/spr_catbig_w_capsule.gif",
+    image: "https://images.unsplash.com/photo-1620321023374-d1a68fbc720d?w=400&h=400&fit=crop",
     description: "South Korea's premier Ethereum event",
     participants: 1100,
     prizes: "$150,000",
@@ -181,7 +182,7 @@ const mockEvents = [
     location: "Miami, USA",
     date: "Jul 25-27, 2024",
     dateStart: "2024-07-25",
-    image: "/spr_catbig_w_capsule.gif",
+    image: "https://images.unsplash.com/photo-1644361566696-3d442b5b482a?w=400&h=400&fit=crop",
     description: "Where crypto meets culture",
     participants: 2200,
     prizes: "$200,000",
@@ -191,7 +192,7 @@ const mockEvents = [
   },
 ]
 
-export default function EventsPage() {
+function EventsContent() {
   const searchParams = useSearchParams()
   const locationParam = searchParams.get("location")
 
@@ -236,12 +237,9 @@ export default function EventsPage() {
           title="Browse Events"
           subtitle="Discover upcoming hackathons and conferences"
           customTrigger={
-            <Link
-              href="/world"
-              className="bg-card/10 hover:bg-card/20 border-2 border-primary text-primary font-mono text-sm px-6 py-2 rounded-md shadow-[0_0_15px_rgba(var(--primary),0.3)] inline-flex items-center justify-center transition-colors"
-            >
-              🌍 Back to Map
-            </Link>
+            <BackButton
+              location={selectedLocation}
+            />
           }
         />
 
@@ -366,7 +364,7 @@ export default function EventsPage() {
                     <img
                       src={event.image}
                       alt={event.name}
-                      className="w-20 h-20 object-cover"
+                      className="w-20 h-20 object-cover rounded-lg"
                     />
                   </div>
 
@@ -453,5 +451,13 @@ export default function EventsPage() {
         </ScrollArea>
       )}
     </div>
+  )
+}
+
+export default function EventsPage() {
+  return (
+    <Suspense fallback={<div className="min-h-dvh max-w-6xl mx-auto p-4">Loading...</div>}>
+      <EventsContent />
+    </Suspense>
   )
 }

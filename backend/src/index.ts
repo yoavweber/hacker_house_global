@@ -1,10 +1,12 @@
 import express from 'express';
+import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import { createApiRoutes } from './routes/api.js';
+import { createInternalRoutes } from './routes/internal.js';
 import { getOpenApiComponents } from './schemas/bookingSchemas.js';
 import { createContainer } from './container.js';
 
@@ -22,6 +24,12 @@ console.log('OPENAI_API_KEY:', process.env.OPENAI_API_KEY ? '✓ Set' : '✗ Not
 
 const app = express();
 const port = process.env.PORT || 4000;
+
+// Configure CORS to allow requests from localhost:3000
+app.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+}));
 
 app.use(express.json());
 
@@ -51,8 +59,10 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 // Initialize dependencies
 const dependencies = createContainer();
 const apiRoutes = createApiRoutes(dependencies);
+const internalRoutes = createInternalRoutes(dependencies);
 
 app.use('/api', apiRoutes);
+app.use('/internal', internalRoutes);
 
 app.get('/', (req, res) => {
     res.send('Hacker House Booking Agent API is running');

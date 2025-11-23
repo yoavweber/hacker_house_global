@@ -87,6 +87,9 @@ export class SearchListingsUseCase {
     }
 
     async searchFromCriteria(criteria: SearchCriteria) {
+        // Validate dates are not in the past
+        this.validateDates(criteria.checkInDate, criteria.checkOutDate);
+
         const event = this.tryResolveEvent(criteria);
         const coworkingSpaces = this.tryResolveCoworkingSpaces(criteria.city);
 
@@ -168,6 +171,9 @@ export class SearchListingsUseCase {
         if (!checkInDate || !checkOutDate) {
             throw new HttpError(400, 'Check-in and check-out dates are required');
         }
+
+        // Validate dates are not in the past
+        this.validateDates(checkInDate, checkOutDate);
 
         const travelerCount = requirements.travelers?.count;
         if (!travelerCount) {
@@ -421,6 +427,33 @@ export class SearchListingsUseCase {
             Math.sin(dLon / 2) * Math.sin(dLon / 2);
         const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         return R * c;
+    }
+
+    /**
+     * Validates that check-in and check-out dates are not in the past.
+     * Also ensures check-out is after check-in.
+     */
+    private validateDates(checkInDate: string, checkOutDate: string): void {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Reset to start of day for comparison
+
+        const checkIn = new Date(checkInDate);
+        checkIn.setHours(0, 0, 0, 0);
+
+        const checkOut = new Date(checkOutDate);
+        checkOut.setHours(0, 0, 0, 0);
+
+        if (checkIn < today) {
+            throw new HttpError(400, `Check-in date (${checkInDate}) cannot be in the past. Please select a future date.`);
+        }
+
+        if (checkOut < today) {
+            throw new HttpError(400, `Check-out date (${checkOutDate}) cannot be in the past. Please select a future date.`);
+        }
+
+        if (checkOut <= checkIn) {
+            throw new HttpError(400, `Check-out date (${checkOutDate}) must be after check-in date (${checkInDate}).`);
+        }
     }
 }
 

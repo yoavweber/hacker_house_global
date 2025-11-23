@@ -1,5 +1,6 @@
 "use client"
 
+import { BackButton } from "@/components/back-button"
 import { PageHeader } from "@/components/page-header"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -19,7 +20,7 @@ import {
 import { Calendar as CalendarIcon, Home, MapPin, Users } from "lucide-react"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import { useState } from "react"
+import { Suspense, useState } from "react"
 import { format } from "date-fns"
 
 const availableTags = [
@@ -37,7 +38,7 @@ const availableTags = [
   "Testing",
 ]
 
-export default function HackerHouseFormPage() {
+function HackerHouseFormContent() {
   const searchParams = useSearchParams()
   const locationParam = searchParams.get("location")
   const eventParam = searchParams.get("event")
@@ -78,12 +79,9 @@ export default function HackerHouseFormPage() {
         title="Create Hacker House"
         subtitle="Set up your collaborative space for builders"
         customTrigger={
-          <Link
-            href="/world"
-            className="bg-card/10 hover:bg-card/20 border-2 border-primary text-primary font-mono text-sm px-6 py-2 rounded-md shadow-[0_0_15px_rgba(var(--primary),0.3)] inline-flex items-center justify-center transition-colors"
-          >
-            ← Back to Map
-          </Link>
+          <BackButton
+            label="← Back to Map"
+          />
         }
       />
 
@@ -386,5 +384,13 @@ export default function HackerHouseFormPage() {
         </div>
       </form>
     </div>
+  )
+}
+
+export default function HackerHouseFormPage() {
+  return (
+    <Suspense fallback={<div className="min-h-dvh max-w-2xl mx-auto p-4">Loading...</div>}>
+      <HackerHouseFormContent />
+    </Suspense>
   )
 }

@@ -1,7 +1,27 @@
 "use client"
 
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
+import {
+  useIsUsernameAvailable,
+  useGetPriceOfRegistration,
+  useFindAvailableNonce,
+  useNameServiceSignatureBuilder,
+  usePreRegisterUsername,
+  useRegisterUsername,
+  useGetOwnerOfIdentity,
+  useVerifyIfIdentityExists,
+} from "@/hooks/useEvvmNameService"
 import { useGetAllPoapsByAddress } from "@/services/api/poap"
 import { useGetProfileTalentProtocol } from "@/services/api/talent-protocol"
 import { ConnectButton } from "@rainbow-me/rainbowkit"
@@ -13,10 +33,320 @@ import {
   Zap,
 } from "lucide-react"
 import Link from "next/link"
+import { formatEther } from "viem"
 import { useAccount } from "wagmi"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { ProfileSkeleton } from "./profile-skeleton"
 import { PoapSkeleton } from "./poap-skeleton"
+
+type NameServiceDialogProps = {
+  address?: `0x${string}`
+  skills?: string[]
+}
+
+function NameServiceDialog({ address, skills }: NameServiceDialogProps) {
+  const [open, setOpen] = useState(false)
+  const [username, setUsername] = useState("")
+  const [selectedSkills, setSelectedSkills] = useState<string[]>([])
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState<string | null>(null)
+
+  const effectiveUsername = open ? username.trim() : ""
+
+  const {
+    isAvailable,
+    isLoading: isAvailabilityLoading,
+    isError: isAvailabilityError,
+  } = useIsUsernameAvailable(effectiveUsername)
+
+  const {
+    price,
+    isLoading: isPriceLoading,
+  } = useGetPriceOfRegistration(effectiveUsername)
+
+  const {
+    exists,
+    isLoading: isExistsLoading,
+    isError: isExistsError,
+  } = useVerifyIfIdentityExists(effectiveUsername)
+
+  const {
+    owner,
+    isLoading: isOwnerLoading,
+    isError: isOwnerError,
+  } = useGetOwnerOfIdentity(effectiveUsername)
+
+  const {
+    nonce,
+    findNonce,
+    isLoading: isNonceLoading,
+  } = useFindAvailableNonce(
+    (address || "0x0000000000000000000000000000000000000000") as `0x${string}`
+  )
+
+  const { signPreRegistration, signRegistration } =
+    useNameServiceSignatureBuilder()
+  const { execute: preRegister, isPending: isPrePending } =
+    usePreRegisterUsername()
+  const { execute: register, isPending: isRegPending } = useRegisterUsername()
+
+  const handleOpenChange = (nextOpen: boolean) => {
+    setOpen(nextOpen)
+    if (nextOpen) {
+      setUsername("")
+      setSelectedSkills(skills || [])
+      setError(null)
+      setSuccess(null)
+      if (address) {
+        findNonce()
+      }
+    }
+  }
+
+  const toggleSkill = (skill: string) => {
+    setSelectedSkills((prev) =>
+      prev.includes(skill) ? prev.filter((s) => s !== skill) : [...prev, skill]
+    )
+  }
+
+  const canSubmit =
+    !!address &&
+    !!effectiveUsername &&
+    !isAvailabilityLoading &&
+    isAvailable &&
+    !!price &&
+    !!nonce &&
+    !isSubmitting &&
+    !isPrePending &&
+    !isRegPending &&
+    !isPriceLoading &&
+    !isNonceLoading
+
+  const priceLabel =
+    price && typeof price === "bigint" ? formatEther(price) : undefined
+
+  useEffect(() => {
+    if (!effectiveUsername) return
+    // Debug log to verify contract responses for availability vs existence
+    console.log("EVVM NameService debug", {
+      username: effectiveUsername,
+      isAvailable,
+      exists,
+      owner,
+      isAvailabilityLoading,
+      isExistsLoading,
+      isOwnerLoading,
+      isAvailabilityError,
+      isExistsError,
+      isOwnerError,
+    })
+  }, [
+    effectiveUsername,
+    isAvailable,
+    exists,
+    owner,
+    isAvailabilityLoading,
+    isExistsLoading,
+    isOwnerLoading,
+    isAvailabilityError,
+    isExistsError,
+    isOwnerError,
+  ])
+
+  const handleCreate = async () => {
+    if (!canSubmit || !address || !nonce || !price) {
+      return
+    }
+
+    setIsSubmitting(true)
+    setError(null)
+    setSuccess(null)
+
+    try {
+      const randomBytes = new Uint8Array(8)
+      crypto.getRandomValues(randomBytes)
+      let clowNumber = BigInt(0)
+      for (const b of randomBytes) {
+        clowNumber = (clowNumber << BigInt(8)) | BigInt(b)
+      }
+
+      const { hashUsername, signature_pre } = await signPreRegistration(
+        effectiveUsername,
+        nonce
+      )
+
+      await preRegister(
+        address,
+        hashUsername as `0x${string}`,
+        nonce,
+        signature_pre as `0x${string}`,
+        price as bigint
+      )
+
+      const signature_reg = await signRegistration(
+        effectiveUsername,
+        clowNumber,
+        nonce
+      )
+
+      await register(
+        address,
+        effectiveUsername,
+        clowNumber,
+        nonce,
+        signature_reg as `0x${string}`
+      )
+
+      setSuccess("Your EVVM name service was created.")
+    } catch {
+      setError("Something went wrong while creating your name service.")
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={handleOpenChange}>
+      <DialogTrigger asChild>
+        <Button className="w-full bg-card/50 hover:bg-card/60 border-2 border-chart-3 text-chart-3 font-mono text-sm h-12 rounded-lg shadow-[0_0_15px_rgba(var(--chart-3),0.3)] hover:shadow-[0_0_25px_rgba(var(--chart-3),0.5)] transition-all uppercase tracking-wider">
+          🧬 Create EVVM Name
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="max-w-md bg-card border-2 border-primary/30">
+        <DialogHeader>
+          <DialogTitle className="font-mono uppercase tracking-wider text-primary">
+            Create EVVM Name
+          </DialogTitle>
+          <DialogDescription className="text-xs font-mono text-muted-foreground">
+            Choose a name and highlight your core skills to register your EVVM
+            identity.
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="space-y-4 py-2">
+          <div className="space-y-2">
+            <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+              Name
+            </label>
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => {
+                setUsername(e.target.value)
+                setError(null)
+                setSuccess(null)
+              }}
+              placeholder="e.g. builder.evvm"
+              className="w-full bg-card/20 border border-primary/30 rounded-md px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/50 font-mono transition-all"
+            />
+            {effectiveUsername && (
+              <p className="text-xs font-mono">
+                {isAvailabilityLoading ? (
+                  <span className="text-muted-foreground">
+                    Checking availability...
+                  </span>
+                ) : isAvailable ? (
+                  <span className="text-green-500">Name is available</span>
+                ) : (
+                  <span className="text-destructive">
+                    Name is not available
+                  </span>
+                )}
+              </p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+              Skills
+            </label>
+            {skills && skills.length > 0 ? (
+              <div className="flex flex-wrap gap-1.5">
+                {skills.map((skill) => {
+                  const active = selectedSkills.includes(skill)
+                  return (
+                    <button
+                      key={skill}
+                      type="button"
+                      onClick={() => toggleSkill(skill)}
+                      className={`px-2 py-1 rounded-full border text-xs font-mono transition-all ${
+                        active
+                          ? "bg-chart-2/20 border-chart-2 text-chart-2 shadow-[0_0_10px_rgba(var(--chart-2),0.4)]"
+                          : "bg-card/20 border-primary/20 text-muted-foreground hover:bg-card/30"
+                      }`}
+                    >
+                      {skill}
+                    </button>
+                  )
+                })}
+              </div>
+            ) : (
+              <p className="text-xs text-muted-foreground font-mono">
+                No skills found in your profile.
+              </p>
+            )}
+          </div>
+
+          {priceLabel && (
+            <p className="text-xs text-muted-foreground font-mono">
+              Estimated registration fee: {priceLabel} ETH
+            </p>
+          )}
+
+          {effectiveUsername && (
+            <div className="mt-2 rounded-md bg-card/30 border border-primary/10 p-2">
+              <p className="text-[10px] font-mono text-muted-foreground mb-1">
+                Debug (on-chain state)
+              </p>
+              <pre className="text-[10px] font-mono whitespace-pre-wrap break-all">
+                {JSON.stringify(
+                  {
+                    username: effectiveUsername,
+                    isAvailable,
+                    exists,
+                    owner,
+                    loading: {
+                      availability: isAvailabilityLoading,
+                      exists: isExistsLoading,
+                      owner: isOwnerLoading,
+                    },
+                    error: {
+                      availability: isAvailabilityError,
+                      exists: isExistsError,
+                      owner: isOwnerError,
+                    },
+                  },
+                  null,
+                  2
+                )}
+              </pre>
+            </div>
+          )}
+
+          {error && (
+            <p className="text-xs text-destructive font-mono">{error}</p>
+          )}
+          {success && (
+            <p className="text-xs text-green-500 font-mono">{success}</p>
+          )}
+        </div>
+
+        <DialogFooter>
+          <Button
+            onClick={handleCreate}
+            disabled={!canSubmit}
+            className="w-full bg-chart-2 hover:bg-chart-2/80 text-primary-foreground font-mono text-sm h-10 rounded-md shadow-[0_0_20px_rgba(var(--chart-2),0.4)] hover:shadow-[0_0_30px_rgba(var(--chart-2),0.6)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isSubmitting || isPrePending || isRegPending
+              ? "Creating..."
+              : "Create Name"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  )
+}
 
 export default function ProfilePage() {
   const { address } = useAccount()
@@ -256,7 +586,7 @@ export default function ProfilePage() {
                   </div>
                 </div>
 
-                <div className="w-full mt-6">
+                <div className="w-full my-6">
                   {/* POAP Section - All in One */}
                   {!data || data.length === 0 ? (
                     <div className="flex items-center justify-center gap-3 py-6 text-center rounded-lg bg-card/80">
@@ -337,20 +667,27 @@ export default function ProfilePage() {
             <div></div>
 
             {/* Action Buttons */}
-            <div className="w-full mt-6 grid grid-cols-2 gap-3">
-              <Link
-                href={"/world"}
-                className="w-full flex justify-center items-center bg-card/50 hover:bg-card/60 border-2 border-primary text-primary font-mono text-sm h-12 rounded-lg shadow-[0_0_15px_rgba(var(--primary),0.3)] hover:shadow-[0_0_25px_rgba(var(--primary),0.5)] transition-all uppercase tracking-wider"
-              >
-                🌍 Enter World
-              </Link>
+            <div className="flex flex-col gap-3">
+              <div className="flex gap-3">
+                <Link
+                  href={"/world"}
+                  className="w-full flex justify-center items-center bg-card/50 hover:bg-card/60 border-2 border-primary text-primary font-mono text-sm h-12 rounded-lg shadow-[0_0_15px_rgba(var(--primary),0.3)] hover:shadow-[0_0_25px_rgba(var(--primary),0.5)] transition-all uppercase tracking-wider px-4"
+                >
+                  🌍 Enter World
+                </Link>
 
-              <Link
-                href={"/events"}
-                className="w-full flex justify-center items-center bg-card/50 hover:bg-card/60 border-2 border-chart-2 text-chart-2 font-mono text-sm h-12 rounded-lg shadow-[0_0_15px_rgba(var(--chart-2),0.3)] hover:shadow-[0_0_25px_rgba(var(--chart-2),0.5)] transition-all uppercase tracking-wider"
-              >
-                🎯 Browse Events
-              </Link>
+                <Link
+                  href={"/events"}
+                  className="w-full text-nowrap flex justify-center items-center bg-card/50 hover:bg-card/60 border-2 border-chart-2 text-chart-2 font-mono text-sm h-12 rounded-lg shadow-[0_0_15px_rgba(var(--chart-2),0.3)] hover:shadow-[0_0_25px_rgba(var(--chart-2),0.5)] transition-all uppercase tracking-wider px-4"
+                >
+                  🎯 Browse Events
+                </Link>
+              </div>
+
+              <NameServiceDialog
+                address={address}
+                skills={profile?.tags || []}
+              />
             </div>
           </div>
         </main>

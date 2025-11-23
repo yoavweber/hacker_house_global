@@ -1,6 +1,5 @@
 "use client"
 
-import { useState, useEffect } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -15,7 +14,6 @@ import {
   ArrowLeft,
   Bot,
   Calendar,
-  DollarSign,
   Home,
   MapPin,
   MessageSquare,
@@ -23,6 +21,7 @@ import {
   Users,
 } from "lucide-react"
 import Link from "next/link"
+import { useEffect, useState } from "react"
 
 interface Message {
   id: string
@@ -77,35 +76,35 @@ const mockMembers = [
   {
     id: "1",
     name: "Alice.eth",
-    avatar: "/avatars/spr_cat_wcapsulebig_01.gif",
+    avatar: "/avatars/spr_cat01_walking_.gif",
     x: 20,
     y: 30,
   },
   {
     id: "2",
     name: "Bob.eth",
-    avatar: "/avatars/spr_cat_wcapsulebig_02.gif",
+    avatar: "/avatars/spr_cat02_walking_.gif",
     x: 60,
     y: 40,
   },
   {
     id: "3",
     name: "Charlie.eth",
-    avatar: "/avatars/spr_cat_wcapsulebig_03.gif",
+    avatar: "/avatars/spr_cat03_walking_.gif",
     x: 40,
     y: 60,
   },
   {
     id: "4",
     name: "You",
-    avatar: "/avatars/spr_cat_wcapsulebig_04.gif",
+    avatar: "/avatars/spr_cat04_walking_.gif",
     x: 80,
     y: 20,
   },
   {
     id: "5",
     name: "Eve.eth",
-    avatar: "/avatars/spr_cat_wcapsulebig_05.gif",
+    avatar: "/avatars/spr_cat05_walking_.gif",
     x: 30,
     y: 70,
   },
@@ -116,18 +115,29 @@ export default function HackerHouseDetailsPage() {
   const [newMessage, setNewMessage] = useState("")
   const [aiChatOpen, setAiChatOpen] = useState(false)
   const [memberPositions, setMemberPositions] = useState(
-    mockMembers.map((m) => ({ id: m.id, x: m.x, y: m.y }))
+    mockMembers.map((m) => ({ id: m.id, x: m.x, y: m.y, facingLeft: false }))
   )
 
   // Animate members moving randomly
   useEffect(() => {
     const interval = setInterval(() => {
       setMemberPositions((prev) =>
-        prev.map((pos) => ({
-          ...pos,
-          x: Math.max(5, Math.min(95, pos.x + (Math.random() - 0.5) * 10)),
-          y: Math.max(5, Math.min(95, pos.y + (Math.random() - 0.5) * 10)),
-        }))
+        prev.map((pos) => {
+          const deltaX = (Math.random() - 0.5) * 10
+          const newX = Math.max(5, Math.min(95, pos.x + deltaX))
+          const newY = Math.max(
+            5,
+            Math.min(95, pos.y + (Math.random() - 0.5) * 10)
+          )
+          // Voltear el sprite basado en la dirección del movimiento
+          const facingLeft = deltaX < 0
+          return {
+            ...pos,
+            x: newX,
+            y: newY,
+            facingLeft,
+          }
+        })
       )
     }, 2000)
 
@@ -203,7 +213,7 @@ export default function HackerHouseDetailsPage() {
           className="bg-card/10 hover:bg-card/20 border-2 border-primary text-primary font-mono text-sm px-4 sm:px-6 py-2 rounded-md shadow-[0_0_15px_rgba(var(--primary),0.3)] inline-flex items-center justify-center transition-colors gap-2"
         >
           <ArrowLeft className="h-4 w-4" />
-          Leave House
+          Go back
         </Link>
         <Dialog open={aiChatOpen} onOpenChange={setAiChatOpen}>
           <DialogTrigger asChild>
@@ -317,18 +327,6 @@ export default function HackerHouseDetailsPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div className="bg-card/20 border border-primary/10 rounded-md p-3">
             <div className="flex items-center gap-2 mb-1">
-              <DollarSign className="h-4 w-4 text-chart-3" />
-              <p className="text-xs text-muted-foreground font-mono uppercase">
-                Monthly Budget
-              </p>
-            </div>
-            <p className="text-xl font-bold text-chart-3 font-mono">
-              ${mockHouseData.monthlyBudget}
-            </p>
-          </div>
-
-          <div className="bg-card/20 border border-primary/10 rounded-md p-3">
-            <div className="flex items-center gap-2 mb-1">
               <Users className="h-4 w-4 text-chart-2" />
               <p className="text-xs text-muted-foreground font-mono uppercase">
                 Host
@@ -419,6 +417,12 @@ export default function HackerHouseDetailsPage() {
                     src={member.avatar}
                     alt={member.name}
                     className="w-24 h-24 object-contain drop-shadow-[0_0_8px_rgba(var(--primary),0.6)]"
+                    style={{
+                      transform: position.facingLeft
+                        ? "scaleX(-1)"
+                        : "scaleX(1)",
+                      transition: "transform 0.3s ease-in-out",
+                    }}
                   />
                   {/* Name tooltip */}
                   <div className="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">

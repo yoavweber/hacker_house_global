@@ -1,0 +1,900 @@
+[dotenv@17.2.3] injecting env (3) from .env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+Environment variables loaded from: /Users/yoavweber/Desktop/UbuntuBackup/home/yoav/Documents/Documents/Code/Projects/web3/hacker_house/backend/.env
+SEARCHAPI_IO_API_KEY: ✓ Set
+OPENAI_API_KEY: ✓ Set
+Not all input has been taken into account at your final specification.
+Here's the report: 
+
+
+ Error in ./src/controllers/AgentController.ts :
+YAMLSyntaxError: All collection items must start at the same column at line 3, column 5:
+
+    summary: Search for listings from a natural language request
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^…
+
+YAMLSemanticError: Nested mappings are not allowed in compact mappings at line 4, column 18:
+
+    description: End-to-end flow:
+                 ^^^^^^^^^^^^^^^^…
+
+YAMLSyntaxError: Failed to resolve SEQ_ITEM node here at line 5, column 7:
+
+      - Uses the LLM to parse a natural language request into structured search…
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^…
+
+YAMLSemanticError: Implicit map keys need to be followed by map values at line 5, column 7:
+
+      - Uses the LLM to parse a natural language request into structured search…
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^…
+
+YAMLSyntaxError: Failed to resolve SEQ_ITEM node here at line 6, column 7:
+
+      - Searches potential listings.
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+YAMLSemanticError: Implicit map keys need to be followed by map values at line 6, column 7:
+
+      - Searches potential listings.
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+YAMLSyntaxError: Failed to resolve SEQ_ITEM node here at line 7, column 7:
+
+      - Mocks coworking proximity per listing.
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+YAMLSemanticError: Implicit map keys need to be followed by map values at line 7, column 7:
+
+      - Mocks coworking proximity per listing.
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+YAMLSyntaxError: Failed to resolve SEQ_ITEM node here at line 8, column 7:
+
+      - Evaluates safety of each listing.
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+YAMLSemanticError: Implicit map keys need to be followed by map values at line 8, column 7:
+
+      - Evaluates safety of each listing.
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+YAMLSyntaxError: Failed to resolve SEQ_ITEM node here at line 9, column 7:
+
+      - Optionally evaluates distance to an event if provided.
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+YAMLSemanticError: Implicit map keys need to be followed by map values at line 9, column 7:
+
+      - Optionally evaluates distance to an event if provided.
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+YAMLSemanticError: Map keys must be unique; "null" is repeated at line 3, column 5:
+
+    summary: Search for listings from a natural language request
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^…
+
+YAMLSemanticError: Map keys must be unique; "null" is repeated at line 3, column 5:
+
+    summary: Search for listings from a natural language request
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^…
+
+YAMLSemanticError: Map keys must be unique; "null" is repeated at line 3, column 5:
+
+    summary: Search for listings from a natural language request
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^…
+
+YAMLSemanticError: Map keys must be unique; "null" is repeated at line 3, column 5:
+
+    summary: Search for listings from a natural language request
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^…
+
+Client initialized. API Key present: true
+OPENROUTESERVICE_API_KEY is not set. LocationScoreService will use estimated metrics.
+Server is running on port 4000
+Client: Searching listings for Lisbon
+Client: Making API request with params: {
+  engine: 'airbnb',
+  q: 'Lisbon',
+  check_in_date: '2024-05-01',
+  check_out_date: '2024-05-07',
+  adults: 3,
+  currency: 'USD',
+  apiKey: '***'
+}
+Airbnb API Error: AxiosError: Request failed with status code 400
+    at settle (file:///Users/yoavweber/Desktop/UbuntuBackup/home/yoav/Documents/Documents/Code/Projects/web3/hacker_house/backend/node_modules/.pnpm/axios@1.13.2/node_modules/axios/lib/core/settle.js:19:12)
+    at IncomingMessage.handleStreamEnd (file:///Users/yoavweber/Desktop/UbuntuBackup/home/yoav/Documents/Documents/Code/Projects/web3/hacker_house/backend/node_modules/.pnpm/axios@1.13.2/node_modules/axios/lib/adapters/http.js:793:11)
+    at IncomingMessage.emit (node:events:536:35)
+    at endReadableNT (node:internal/streams/readable:1698:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)
+    at Axios.request (file:///Users/yoavweber/Desktop/UbuntuBackup/home/yoav/Documents/Documents/Code/Projects/web3/hacker_house/backend/node_modules/.pnpm/axios@1.13.2/node_modules/axios/lib/core/Axios.js:45:41)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Client.searchListings (file:///Users/yoavweber/Desktop/UbuntuBackup/home/yoav/Documents/Documents/Code/Projects/web3/hacker_house/backend/dist/booking/AirBnbClient.js:31:30)
+    at async SearchListingsUseCase.searchFromCriteria (file:///Users/yoavweber/Desktop/UbuntuBackup/home/yoav/Documents/Documents/Code/Projects/web3/hacker_house/backend/dist/usecases/SearchListingsUseCase.js:52:26)
+    at async AgentController.search (file:///Users/yoavweber/Desktop/UbuntuBackup/home/yoav/Documents/Documents/Code/Projects/web3/hacker_house/backend/dist/controllers/AgentController.js:348:34) {
+  code: 'ERR_BAD_REQUEST',
+  config: {
+    transitional: {
+      silentJSONParsing: true,
+      forcedJSONParsing: true,
+      clarifyTimeoutError: false
+    },
+    adapter: [ 'xhr', 'http', 'fetch' ],
+    transformRequest: [ [Function: transformRequest] ],
+    transformResponse: [ [Function: transformResponse] ],
+    timeout: 0,
+    xsrfCookieName: 'XSRF-TOKEN',
+    xsrfHeaderName: 'X-XSRF-TOKEN',
+    maxContentLength: -1,
+    maxBodyLength: -1,
+    env: { FormData: [Function], Blob: [class Blob] },
+    validateStatus: [Function: validateStatus],
+    headers: Object [AxiosHeaders] {
+      Accept: 'application/json, text/plain, */*',
+      'Content-Type': undefined,
+      Authorization: 'Bearer nZrV9Q7PE9HDdu7tQtwPYJB7',
+      'User-Agent': 'axios/1.13.2',
+      'Accept-Encoding': 'gzip, compress, deflate, br'
+    },
+    params: {
+      engine: 'airbnb',
+      q: 'Lisbon',
+      check_in_date: '2024-05-01',
+      check_out_date: '2024-05-07',
+      adults: 3,
+      currency: 'USD'
+    },
+    method: 'get',
+    url: 'https://www.searchapi.io/api/v1/search',
+    allowAbsoluteUrls: true,
+    data: undefined
+  },
+  request: <ref *1> ClientRequest {
+    _events: [Object: null prototype] {
+      abort: [Function (anonymous)],
+      aborted: [Function (anonymous)],
+      connect: [Function (anonymous)],
+      error: [Function (anonymous)],
+      socket: [Function (anonymous)],
+      timeout: [Function (anonymous)],
+      finish: [Function: requestOnFinish]
+    },
+    _eventsCount: 7,
+    _maxListeners: undefined,
+    outputData: [],
+    outputSize: 0,
+    writable: true,
+    destroyed: true,
+    _last: true,
+    chunkedEncoding: false,
+    shouldKeepAlive: true,
+    maxRequestsOnConnectionReached: false,
+    _defaultKeepAlive: true,
+    useChunkedEncodingByDefault: false,
+    sendDate: false,
+    _removedConnection: false,
+    _removedContLen: false,
+    _removedTE: false,
+    strictContentLength: false,
+    _contentLength: 0,
+    _hasBody: true,
+    _trailer: '',
+    finished: true,
+    _headerSent: true,
+    _closed: true,
+    socket: TLSSocket {
+      _tlsOptions: [Object],
+      _secureEstablished: true,
+      _securePending: false,
+      _newSessionPending: false,
+      _controlReleased: true,
+      secureConnecting: false,
+      _SNICallback: null,
+      servername: 'www.searchapi.io',
+      alpnProtocol: false,
+      authorized: true,
+      authorizationError: null,
+      encrypted: true,
+      _events: [Object: null prototype],
+      _eventsCount: 9,
+      connecting: false,
+      _hadError: false,
+      _parent: null,
+      _host: 'www.searchapi.io',
+      _closeAfterHandlingError: false,
+      _readableState: [ReadableState],
+      _writableState: [WritableState],
+      allowHalfOpen: false,
+      _maxListeners: undefined,
+      _sockname: null,
+      _pendingData: null,
+      _pendingEncoding: '',
+      server: undefined,
+      _server: null,
+      ssl: [TLSWrap],
+      _requestCert: true,
+      _rejectUnauthorized: true,
+      timeout: 5000,
+      parser: null,
+      _httpMessage: null,
+      autoSelectFamilyAttemptedAddresses: [Array],
+      [Symbol(alpncallback)]: null,
+      [Symbol(res)]: [TLSWrap],
+      [Symbol(verified)]: true,
+      [Symbol(pendingSession)]: null,
+      [Symbol(async_id_symbol)]: -1,
+      [Symbol(kHandle)]: [TLSWrap],
+      [Symbol(lastWriteQueueSize)]: 0,
+      [Symbol(timeout)]: Timeout {
+        _idleTimeout: 5000,
+        _idlePrev: [TimersList],
+        _idleNext: [TimersList],
+        _idleStart: 3777,
+        _onTimeout: [Function: bound ],
+        _timerArgs: undefined,
+        _repeat: null,
+        _destroyed: false,
+        [Symbol(refed)]: false,
+        [Symbol(kHasPrimitive)]: false,
+        [Symbol(asyncId)]: 1301,
+        [Symbol(triggerId)]: 1299
+      },
+      [Symbol(kBuffer)]: null,
+      [Symbol(kBufferCb)]: null,
+      [Symbol(kBufferGen)]: null,
+      [Symbol(shapeMode)]: true,
+      [Symbol(kCapture)]: false,
+      [Symbol(kSetNoDelay)]: false,
+      [Symbol(kSetKeepAlive)]: true,
+      [Symbol(kSetKeepAliveInitialDelay)]: 1,
+      [Symbol(kBytesRead)]: 0,
+      [Symbol(kBytesWritten)]: 0,
+      [Symbol(connect-options)]: [Object]
+    },
+    _header: 'GET /api/v1/search?engine=airbnb&q=Lisbon&check_in_date=2024-05-01&check_out_date=2024-05-07&adults=3&currency=USD HTTP/1.1\r\n' +
+      'Accept: application/json, text/plain, */*\r\n' +
+      'Authorization: Bearer nZrV9Q7PE9HDdu7tQtwPYJB7\r\n' +
+      'User-Agent: axios/1.13.2\r\n' +
+      'Accept-Encoding: gzip, compress, deflate, br\r\n' +
+      'Host: www.searchapi.io\r\n' +
+      'Connection: keep-alive\r\n' +
+      '\r\n',
+    _keepAliveTimeout: 0,
+    _onPendingData: [Function: nop],
+    agent: Agent {
+      _events: [Object: null prototype],
+      _eventsCount: 2,
+      _maxListeners: undefined,
+      defaultPort: 443,
+      protocol: 'https:',
+      options: [Object: null prototype],
+      requests: [Object: null prototype] {},
+      sockets: [Object: null prototype] {},
+      freeSockets: [Object: null prototype],
+      keepAliveMsecs: 1000,
+      keepAlive: true,
+      maxSockets: Infinity,
+      maxFreeSockets: 256,
+      scheduling: 'lifo',
+      maxTotalSockets: Infinity,
+      totalSocketCount: 1,
+      maxCachedSessions: 100,
+      _sessionCache: [Object],
+      [Symbol(shapeMode)]: false,
+      [Symbol(kCapture)]: false
+    },
+    socketPath: undefined,
+    method: 'GET',
+    maxHeaderSize: undefined,
+    insecureHTTPParser: undefined,
+    joinDuplicateHeaders: undefined,
+    path: '/api/v1/search?engine=airbnb&q=Lisbon&check_in_date=2024-05-01&check_out_date=2024-05-07&adults=3&currency=USD',
+    _ended: true,
+    res: IncomingMessage {
+      _events: [Object],
+      _readableState: [ReadableState],
+      _maxListeners: undefined,
+      socket: null,
+      httpVersionMajor: 1,
+      httpVersionMinor: 1,
+      httpVersion: '1.1',
+      complete: true,
+      rawHeaders: [Array],
+      rawTrailers: [],
+      joinDuplicateHeaders: undefined,
+      aborted: false,
+      upgrade: false,
+      url: '',
+      method: null,
+      statusCode: 400,
+      statusMessage: 'Bad Request',
+      client: [TLSSocket],
+      _consuming: false,
+      _dumped: false,
+      req: [Circular *1],
+      _eventsCount: 4,
+      responseUrl: 'https://www.searchapi.io/api/v1/search?engine=airbnb&q=Lisbon&check_in_date=2024-05-01&check_out_date=2024-05-07&adults=3&currency=USD',
+      redirects: [],
+      [Symbol(shapeMode)]: true,
+      [Symbol(kCapture)]: false,
+      [Symbol(kHeaders)]: [Object],
+      [Symbol(kHeadersCount)]: 44,
+      [Symbol(kTrailers)]: null,
+      [Symbol(kTrailersCount)]: 0
+    },
+    aborted: false,
+    timeoutCb: null,
+    upgradeOrConnect: false,
+    parser: null,
+    maxHeadersCount: null,
+    reusedSocket: false,
+    host: 'www.searchapi.io',
+    protocol: 'https:',
+    _redirectable: Writable {
+      _events: [Object],
+      _writableState: [WritableState],
+      _maxListeners: undefined,
+      _options: [Object],
+      _ended: true,
+      _ending: true,
+      _redirectCount: 0,
+      _redirects: [],
+      _requestBodyLength: 0,
+      _requestBodyBuffers: [],
+      _eventsCount: 3,
+      _onNativeResponse: [Function (anonymous)],
+      _currentRequest: [Circular *1],
+      _currentUrl: 'https://www.searchapi.io/api/v1/search?engine=airbnb&q=Lisbon&check_in_date=2024-05-01&check_out_date=2024-05-07&adults=3&currency=USD',
+      _timeout: null,
+      [Symbol(shapeMode)]: true,
+      [Symbol(kCapture)]: false
+    },
+    [Symbol(shapeMode)]: false,
+    [Symbol(kCapture)]: false,
+    [Symbol(kBytesWritten)]: 0,
+    [Symbol(kNeedDrain)]: false,
+    [Symbol(corked)]: 0,
+    [Symbol(kOutHeaders)]: [Object: null prototype] {
+      accept: [Array],
+      authorization: [Array],
+      'user-agent': [Array],
+      'accept-encoding': [Array],
+      host: [Array]
+    },
+    [Symbol(errored)]: null,
+    [Symbol(kHighWaterMark)]: 16384,
+    [Symbol(kRejectNonStandardBodyWrites)]: false,
+    [Symbol(kUniqueHeaders)]: null
+  },
+  response: {
+    status: 400,
+    statusText: 'Bad Request',
+    headers: Object [AxiosHeaders] {
+      'content-type': 'application/json; charset=utf-8',
+      'content-length': '53',
+      connection: 'keep-alive',
+      date: 'Sun, 23 Nov 2025 01:32:06 GMT',
+      'strict-transport-security': 'max-age=63072000; includeSubDomains',
+      'x-frame-options': 'SAMEORIGIN',
+      'x-xss-protection': '0',
+      'x-content-type-options': 'nosniff',
+      'x-permitted-cross-domain-policies': 'none',
+      'referrer-policy': 'strict-origin-when-cross-origin',
+      'access-control-allow-origin': '*',
+      'access-control-allow-methods': 'GET, OPTIONS',
+      'access-control-allow-headers': 'Origin, Content-Type, Accept, Authorization',
+      'access-control-max-age': '7200',
+      'cache-control': 'no-cache',
+      'x-request-id': '91901636-4609-448f-b58b-7bbeb0a88f38',
+      'x-runtime': '0.019006',
+      'x-cache': 'Error from cloudfront',
+      via: '1.1 cb89d4fbaf2409084f8dcb05f915f866.cloudfront.net (CloudFront)',
+      'x-amz-cf-pop': 'EZE50-P3',
+      'alt-svc': 'h3=":443"; ma=86400',
+      'x-amz-cf-id': 'as36wLfOKcNwYveaJQ1W0NflF3_zGrVjBxf2GSOhenGqlFwuitwbvw=='
+    },
+    config: {
+      transitional: [Object],
+      adapter: [Array],
+      transformRequest: [Array],
+      transformResponse: [Array],
+      timeout: 0,
+      xsrfCookieName: 'XSRF-TOKEN',
+      xsrfHeaderName: 'X-XSRF-TOKEN',
+      maxContentLength: -1,
+      maxBodyLength: -1,
+      env: [Object],
+      validateStatus: [Function: validateStatus],
+      headers: [Object [AxiosHeaders]],
+      params: [Object],
+      method: 'get',
+      url: 'https://www.searchapi.io/api/v1/search',
+      allowAbsoluteUrls: true,
+      data: undefined
+    },
+    request: <ref *1> ClientRequest {
+      _events: [Object: null prototype],
+      _eventsCount: 7,
+      _maxListeners: undefined,
+      outputData: [],
+      outputSize: 0,
+      writable: true,
+      destroyed: true,
+      _last: true,
+      chunkedEncoding: false,
+      shouldKeepAlive: true,
+      maxRequestsOnConnectionReached: false,
+      _defaultKeepAlive: true,
+      useChunkedEncodingByDefault: false,
+      sendDate: false,
+      _removedConnection: false,
+      _removedContLen: false,
+      _removedTE: false,
+      strictContentLength: false,
+      _contentLength: 0,
+      _hasBody: true,
+      _trailer: '',
+      finished: true,
+      _headerSent: true,
+      _closed: true,
+      socket: [TLSSocket],
+      _header: 'GET /api/v1/search?engine=airbnb&q=Lisbon&check_in_date=2024-05-01&check_out_date=2024-05-07&adults=3&currency=USD HTTP/1.1\r\n' +
+        'Accept: application/json, text/plain, */*\r\n' +
+        'Authorization: Bearer nZrV9Q7PE9HDdu7tQtwPYJB7\r\n' +
+        'User-Agent: axios/1.13.2\r\n' +
+        'Accept-Encoding: gzip, compress, deflate, br\r\n' +
+        'Host: www.searchapi.io\r\n' +
+        'Connection: keep-alive\r\n' +
+        '\r\n',
+      _keepAliveTimeout: 0,
+      _onPendingData: [Function: nop],
+      agent: [Agent],
+      socketPath: undefined,
+      method: 'GET',
+      maxHeaderSize: undefined,
+      insecureHTTPParser: undefined,
+      joinDuplicateHeaders: undefined,
+      path: '/api/v1/search?engine=airbnb&q=Lisbon&check_in_date=2024-05-01&check_out_date=2024-05-07&adults=3&currency=USD',
+      _ended: true,
+      res: [IncomingMessage],
+      aborted: false,
+      timeoutCb: null,
+      upgradeOrConnect: false,
+      parser: null,
+      maxHeadersCount: null,
+      reusedSocket: false,
+      host: 'www.searchapi.io',
+      protocol: 'https:',
+      _redirectable: [Writable],
+      [Symbol(shapeMode)]: false,
+      [Symbol(kCapture)]: false,
+      [Symbol(kBytesWritten)]: 0,
+      [Symbol(kNeedDrain)]: false,
+      [Symbol(corked)]: 0,
+      [Symbol(kOutHeaders)]: [Object: null prototype],
+      [Symbol(errored)]: null,
+      [Symbol(kHighWaterMark)]: 16384,
+      [Symbol(kRejectNonStandardBodyWrites)]: false,
+      [Symbol(kUniqueHeaders)]: null
+    },
+    data: { error: 'Check-in date cannot be in the past.' }
+  },
+  status: 400
+}
+AxiosError: Request failed with status code 400
+    at settle (file:///Users/yoavweber/Desktop/UbuntuBackup/home/yoav/Documents/Documents/Code/Projects/web3/hacker_house/backend/node_modules/.pnpm/axios@1.13.2/node_modules/axios/lib/core/settle.js:19:12)
+    at IncomingMessage.handleStreamEnd (file:///Users/yoavweber/Desktop/UbuntuBackup/home/yoav/Documents/Documents/Code/Projects/web3/hacker_house/backend/node_modules/.pnpm/axios@1.13.2/node_modules/axios/lib/adapters/http.js:793:11)
+    at IncomingMessage.emit (node:events:536:35)
+    at endReadableNT (node:internal/streams/readable:1698:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)
+    at Axios.request (file:///Users/yoavweber/Desktop/UbuntuBackup/home/yoav/Documents/Documents/Code/Projects/web3/hacker_house/backend/node_modules/.pnpm/axios@1.13.2/node_modules/axios/lib/core/Axios.js:45:41)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async Client.searchListings (file:///Users/yoavweber/Desktop/UbuntuBackup/home/yoav/Documents/Documents/Code/Projects/web3/hacker_house/backend/dist/booking/AirBnbClient.js:31:30)
+    at async SearchListingsUseCase.searchFromCriteria (file:///Users/yoavweber/Desktop/UbuntuBackup/home/yoav/Documents/Documents/Code/Projects/web3/hacker_house/backend/dist/usecases/SearchListingsUseCase.js:52:26)
+    at async AgentController.search (file:///Users/yoavweber/Desktop/UbuntuBackup/home/yoav/Documents/Documents/Code/Projects/web3/hacker_house/backend/dist/controllers/AgentController.js:348:34) {
+  code: 'ERR_BAD_REQUEST',
+  config: {
+    transitional: {
+      silentJSONParsing: true,
+      forcedJSONParsing: true,
+      clarifyTimeoutError: false
+    },
+    adapter: [ 'xhr', 'http', 'fetch' ],
+    transformRequest: [ [Function: transformRequest] ],
+    transformResponse: [ [Function: transformResponse] ],
+    timeout: 0,
+    xsrfCookieName: 'XSRF-TOKEN',
+    xsrfHeaderName: 'X-XSRF-TOKEN',
+    maxContentLength: -1,
+    maxBodyLength: -1,
+    env: { FormData: [Function], Blob: [class Blob] },
+    validateStatus: [Function: validateStatus],
+    headers: Object [AxiosHeaders] {
+      Accept: 'application/json, text/plain, */*',
+      'Content-Type': undefined,
+      Authorization: 'Bearer nZrV9Q7PE9HDdu7tQtwPYJB7',
+      'User-Agent': 'axios/1.13.2',
+      'Accept-Encoding': 'gzip, compress, deflate, br'
+    },
+    params: {
+      engine: 'airbnb',
+      q: 'Lisbon',
+      check_in_date: '2024-05-01',
+      check_out_date: '2024-05-07',
+      adults: 3,
+      currency: 'USD'
+    },
+    method: 'get',
+    url: 'https://www.searchapi.io/api/v1/search',
+    allowAbsoluteUrls: true,
+    data: undefined
+  },
+  request: <ref *1> ClientRequest {
+    _events: [Object: null prototype] {
+      abort: [Function (anonymous)],
+      aborted: [Function (anonymous)],
+      connect: [Function (anonymous)],
+      error: [Function (anonymous)],
+      socket: [Function (anonymous)],
+      timeout: [Function (anonymous)],
+      finish: [Function: requestOnFinish]
+    },
+    _eventsCount: 7,
+    _maxListeners: undefined,
+    outputData: [],
+    outputSize: 0,
+    writable: true,
+    destroyed: true,
+    _last: true,
+    chunkedEncoding: false,
+    shouldKeepAlive: true,
+    maxRequestsOnConnectionReached: false,
+    _defaultKeepAlive: true,
+    useChunkedEncodingByDefault: false,
+    sendDate: false,
+    _removedConnection: false,
+    _removedContLen: false,
+    _removedTE: false,
+    strictContentLength: false,
+    _contentLength: 0,
+    _hasBody: true,
+    _trailer: '',
+    finished: true,
+    _headerSent: true,
+    _closed: true,
+    socket: TLSSocket {
+      _tlsOptions: [Object],
+      _secureEstablished: true,
+      _securePending: false,
+      _newSessionPending: false,
+      _controlReleased: true,
+      secureConnecting: false,
+      _SNICallback: null,
+      servername: 'www.searchapi.io',
+      alpnProtocol: false,
+      authorized: true,
+      authorizationError: null,
+      encrypted: true,
+      _events: [Object: null prototype],
+      _eventsCount: 9,
+      connecting: false,
+      _hadError: false,
+      _parent: null,
+      _host: 'www.searchapi.io',
+      _closeAfterHandlingError: false,
+      _readableState: [ReadableState],
+      _writableState: [WritableState],
+      allowHalfOpen: false,
+      _maxListeners: undefined,
+      _sockname: null,
+      _pendingData: null,
+      _pendingEncoding: '',
+      server: undefined,
+      _server: null,
+      ssl: [TLSWrap],
+      _requestCert: true,
+      _rejectUnauthorized: true,
+      timeout: 5000,
+      parser: null,
+      _httpMessage: null,
+      autoSelectFamilyAttemptedAddresses: [Array],
+      [Symbol(alpncallback)]: null,
+      [Symbol(res)]: [TLSWrap],
+      [Symbol(verified)]: true,
+      [Symbol(pendingSession)]: null,
+      [Symbol(async_id_symbol)]: -1,
+      [Symbol(kHandle)]: [TLSWrap],
+      [Symbol(lastWriteQueueSize)]: 0,
+      [Symbol(timeout)]: Timeout {
+        _idleTimeout: 5000,
+        _idlePrev: [TimersList],
+        _idleNext: [TimersList],
+        _idleStart: 3777,
+        _onTimeout: [Function: bound ],
+        _timerArgs: undefined,
+        _repeat: null,
+        _destroyed: false,
+        [Symbol(refed)]: false,
+        [Symbol(kHasPrimitive)]: false,
+        [Symbol(asyncId)]: 1301,
+        [Symbol(triggerId)]: 1299
+      },
+      [Symbol(kBuffer)]: null,
+      [Symbol(kBufferCb)]: null,
+      [Symbol(kBufferGen)]: null,
+      [Symbol(shapeMode)]: true,
+      [Symbol(kCapture)]: false,
+      [Symbol(kSetNoDelay)]: false,
+      [Symbol(kSetKeepAlive)]: true,
+      [Symbol(kSetKeepAliveInitialDelay)]: 1,
+      [Symbol(kBytesRead)]: 0,
+      [Symbol(kBytesWritten)]: 0,
+      [Symbol(connect-options)]: [Object]
+    },
+    _header: 'GET /api/v1/search?engine=airbnb&q=Lisbon&check_in_date=2024-05-01&check_out_date=2024-05-07&adults=3&currency=USD HTTP/1.1\r\n' +
+      'Accept: application/json, text/plain, */*\r\n' +
+      'Authorization: Bearer nZrV9Q7PE9HDdu7tQtwPYJB7\r\n' +
+      'User-Agent: axios/1.13.2\r\n' +
+      'Accept-Encoding: gzip, compress, deflate, br\r\n' +
+      'Host: www.searchapi.io\r\n' +
+      'Connection: keep-alive\r\n' +
+      '\r\n',
+    _keepAliveTimeout: 0,
+    _onPendingData: [Function: nop],
+    agent: Agent {
+      _events: [Object: null prototype],
+      _eventsCount: 2,
+      _maxListeners: undefined,
+      defaultPort: 443,
+      protocol: 'https:',
+      options: [Object: null prototype],
+      requests: [Object: null prototype] {},
+      sockets: [Object: null prototype] {},
+      freeSockets: [Object: null prototype],
+      keepAliveMsecs: 1000,
+      keepAlive: true,
+      maxSockets: Infinity,
+      maxFreeSockets: 256,
+      scheduling: 'lifo',
+      maxTotalSockets: Infinity,
+      totalSocketCount: 1,
+      maxCachedSessions: 100,
+      _sessionCache: [Object],
+      [Symbol(shapeMode)]: false,
+      [Symbol(kCapture)]: false
+    },
+    socketPath: undefined,
+    method: 'GET',
+    maxHeaderSize: undefined,
+    insecureHTTPParser: undefined,
+    joinDuplicateHeaders: undefined,
+    path: '/api/v1/search?engine=airbnb&q=Lisbon&check_in_date=2024-05-01&check_out_date=2024-05-07&adults=3&currency=USD',
+    _ended: true,
+    res: IncomingMessage {
+      _events: [Object],
+      _readableState: [ReadableState],
+      _maxListeners: undefined,
+      socket: null,
+      httpVersionMajor: 1,
+      httpVersionMinor: 1,
+      httpVersion: '1.1',
+      complete: true,
+      rawHeaders: [Array],
+      rawTrailers: [],
+      joinDuplicateHeaders: undefined,
+      aborted: false,
+      upgrade: false,
+      url: '',
+      method: null,
+      statusCode: 400,
+      statusMessage: 'Bad Request',
+      client: [TLSSocket],
+      _consuming: false,
+      _dumped: false,
+      req: [Circular *1],
+      _eventsCount: 4,
+      responseUrl: 'https://www.searchapi.io/api/v1/search?engine=airbnb&q=Lisbon&check_in_date=2024-05-01&check_out_date=2024-05-07&adults=3&currency=USD',
+      redirects: [],
+      [Symbol(shapeMode)]: true,
+      [Symbol(kCapture)]: false,
+      [Symbol(kHeaders)]: [Object],
+      [Symbol(kHeadersCount)]: 44,
+      [Symbol(kTrailers)]: null,
+      [Symbol(kTrailersCount)]: 0
+    },
+    aborted: false,
+    timeoutCb: null,
+    upgradeOrConnect: false,
+    parser: null,
+    maxHeadersCount: null,
+    reusedSocket: false,
+    host: 'www.searchapi.io',
+    protocol: 'https:',
+    _redirectable: Writable {
+      _events: [Object],
+      _writableState: [WritableState],
+      _maxListeners: undefined,
+      _options: [Object],
+      _ended: true,
+      _ending: true,
+      _redirectCount: 0,
+      _redirects: [],
+      _requestBodyLength: 0,
+      _requestBodyBuffers: [],
+      _eventsCount: 3,
+      _onNativeResponse: [Function (anonymous)],
+      _currentRequest: [Circular *1],
+      _currentUrl: 'https://www.searchapi.io/api/v1/search?engine=airbnb&q=Lisbon&check_in_date=2024-05-01&check_out_date=2024-05-07&adults=3&currency=USD',
+      _timeout: null,
+      [Symbol(shapeMode)]: true,
+      [Symbol(kCapture)]: false
+    },
+    [Symbol(shapeMode)]: false,
+    [Symbol(kCapture)]: false,
+    [Symbol(kBytesWritten)]: 0,
+    [Symbol(kNeedDrain)]: false,
+    [Symbol(corked)]: 0,
+    [Symbol(kOutHeaders)]: [Object: null prototype] {
+      accept: [Array],
+      authorization: [Array],
+      'user-agent': [Array],
+      'accept-encoding': [Array],
+      host: [Array]
+    },
+    [Symbol(errored)]: null,
+    [Symbol(kHighWaterMark)]: 16384,
+    [Symbol(kRejectNonStandardBodyWrites)]: false,
+    [Symbol(kUniqueHeaders)]: null
+  },
+  response: {
+    status: 400,
+    statusText: 'Bad Request',
+    headers: Object [AxiosHeaders] {
+      'content-type': 'application/json; charset=utf-8',
+      'content-length': '53',
+      connection: 'keep-alive',
+      date: 'Sun, 23 Nov 2025 01:32:06 GMT',
+      'strict-transport-security': 'max-age=63072000; includeSubDomains',
+      'x-frame-options': 'SAMEORIGIN',
+      'x-xss-protection': '0',
+      'x-content-type-options': 'nosniff',
+      'x-permitted-cross-domain-policies': 'none',
+      'referrer-policy': 'strict-origin-when-cross-origin',
+      'access-control-allow-origin': '*',
+      'access-control-allow-methods': 'GET, OPTIONS',
+      'access-control-allow-headers': 'Origin, Content-Type, Accept, Authorization',
+      'access-control-max-age': '7200',
+      'cache-control': 'no-cache',
+      'x-request-id': '91901636-4609-448f-b58b-7bbeb0a88f38',
+      'x-runtime': '0.019006',
+      'x-cache': 'Error from cloudfront',
+      via: '1.1 cb89d4fbaf2409084f8dcb05f915f866.cloudfront.net (CloudFront)',
+      'x-amz-cf-pop': 'EZE50-P3',
+      'alt-svc': 'h3=":443"; ma=86400',
+      'x-amz-cf-id': 'as36wLfOKcNwYveaJQ1W0NflF3_zGrVjBxf2GSOhenGqlFwuitwbvw=='
+    },
+    config: {
+      transitional: [Object],
+      adapter: [Array],
+      transformRequest: [Array],
+      transformResponse: [Array],
+      timeout: 0,
+      xsrfCookieName: 'XSRF-TOKEN',
+      xsrfHeaderName: 'X-XSRF-TOKEN',
+      maxContentLength: -1,
+      maxBodyLength: -1,
+      env: [Object],
+      validateStatus: [Function: validateStatus],
+      headers: [Object [AxiosHeaders]],
+      params: [Object],
+      method: 'get',
+      url: 'https://www.searchapi.io/api/v1/search',
+      allowAbsoluteUrls: true,
+      data: undefined
+    },
+    request: <ref *1> ClientRequest {
+      _events: [Object: null prototype],
+      _eventsCount: 7,
+      _maxListeners: undefined,
+      outputData: [],
+      outputSize: 0,
+      writable: true,
+      destroyed: true,
+      _last: true,
+      chunkedEncoding: false,
+      shouldKeepAlive: true,
+      maxRequestsOnConnectionReached: false,
+      _defaultKeepAlive: true,
+      useChunkedEncodingByDefault: false,
+      sendDate: false,
+      _removedConnection: false,
+      _removedContLen: false,
+      _removedTE: false,
+      strictContentLength: false,
+      _contentLength: 0,
+      _hasBody: true,
+      _trailer: '',
+      finished: true,
+      _headerSent: true,
+      _closed: true,
+      socket: [TLSSocket],
+      _header: 'GET /api/v1/search?engine=airbnb&q=Lisbon&check_in_date=2024-05-01&check_out_date=2024-05-07&adults=3&currency=USD HTTP/1.1\r\n' +
+        'Accept: application/json, text/plain, */*\r\n' +
+        'Authorization: Bearer nZrV9Q7PE9HDdu7tQtwPYJB7\r\n' +
+        'User-Agent: axios/1.13.2\r\n' +
+        'Accept-Encoding: gzip, compress, deflate, br\r\n' +
+        'Host: www.searchapi.io\r\n' +
+        'Connection: keep-alive\r\n' +
+        '\r\n',
+      _keepAliveTimeout: 0,
+      _onPendingData: [Function: nop],
+      agent: [Agent],
+      socketPath: undefined,
+      method: 'GET',
+      maxHeaderSize: undefined,
+      insecureHTTPParser: undefined,
+      joinDuplicateHeaders: undefined,
+      path: '/api/v1/search?engine=airbnb&q=Lisbon&check_in_date=2024-05-01&check_out_date=2024-05-07&adults=3&currency=USD',
+      _ended: true,
+      res: [IncomingMessage],
+      aborted: false,
+      timeoutCb: null,
+      upgradeOrConnect: false,
+      parser: null,
+      maxHeadersCount: null,
+      reusedSocket: false,
+      host: 'www.searchapi.io',
+      protocol: 'https:',
+      _redirectable: [Writable],
+      [Symbol(shapeMode)]: false,
+      [Symbol(kCapture)]: false,
+      [Symbol(kBytesWritten)]: 0,
+      [Symbol(kNeedDrain)]: false,
+      [Symbol(corked)]: 0,
+      [Symbol(kOutHeaders)]: [Object: null prototype],
+      [Symbol(errored)]: null,
+      [Symbol(kHighWaterMark)]: 16384,
+      [Symbol(kRejectNonStandardBodyWrites)]: false,
+      [Symbol(kUniqueHeaders)]: null
+    },
+    data: { error: 'Check-in date cannot be in the past.' }
+  },
+  status: 400
+}
+Client: Searching listings for Lisbon
+Client: Making API request with params: {
+  engine: 'airbnb',
+  q: 'Lisbon',
+  check_in_date: '2025-12-01',
+  check_out_date: '2025-12-07',
+  adults: 3,
+  currency: 'USD',
+  apiKey: '***'
+}
+Client: API response status: 200
+Client: API response data keys: [
+  'search_metadata',
+  'search_parameters',
+  'search_information',
+  'properties',
+  'pagination'
+]
+Client: Found 20 results
+Client: Searching listings for Lisbon
+Client: Making API request with params: {
+  engine: 'airbnb',
+  q: 'Lisbon',
+  check_in_date: '2025-12-01',
+  check_out_date: '2025-12-07',
+  adults: 3,
+  currency: 'USD',
+  apiKey: '***'
+}
+Client: API response status: 200
+Client: API response data keys: [
+  'search_metadata',
+  'search_parameters',
+  'search_information',
+  'properties',
+  'pagination'
+]
+Client: Found 20 results
