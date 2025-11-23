@@ -83,6 +83,15 @@ export default function WorldPage() {
         </div>
       </div>
 
+      {/* Mobile Scroll Hint */}
+      <div className="md:hidden absolute top-16 left-1/2 -translate-x-1/2 z-20">
+        <div className="bg-card border-2 border-primary px-4 py-2 rounded-lg shadow-[0_0_20px_rgba(var(--primary),0.4)] animate-pulse">
+          <p className="text-primary font-mono text-xs">
+            ← Scroll to explore →
+          </p>
+        </div>
+      </div>
+
       {/* Map Container */}
       <ScrollArea className="h-full w-full pt-14 sm:pt-20">
         <div className="relative min-w-max h-full">
@@ -152,7 +161,7 @@ export default function WorldPage() {
                           <Link
                             href={`/find-hackers?location=${encodeURIComponent(
                               event.location
-                            )}&event=${encodeURIComponent(event.name)}`}
+                            )}`}
                             className="block w-full bg-card hover:bg-card/80 border-2 border-chart-2 text-chart-2 font-mono text-[10px] sm:text-xs h-8 sm:h-9 shadow-[0_0_15px_rgba(var(--chart-2),0.3)] transition-all rounded-md px-3 sm:px-4 py-1.5 sm:py-2 text-center"
                           >
                             👥 Find Hackers
@@ -198,15 +207,6 @@ export default function WorldPage() {
         </div>
         <ScrollBar orientation="horizontal" className="bg-primary/10" />
       </ScrollArea>
-
-      {/* Mobile Scroll Hint */}
-      <div className="md:hidden absolute bottom-4 left-1/2 -translate-x-1/2 z-20">
-        <div className="bg-card border-2 border-primary px-4 py-2 rounded-lg shadow-[0_0_20px_rgba(var(--primary),0.4)] animate-pulse">
-          <p className="text-primary font-mono text-xs">
-            ← Scroll to explore →
-          </p>
-        </div>
-      </div>
 
       {/* Corner decorations */}
       <div className="hidden sm:block absolute top-20 left-4 w-12 h-12 border-l-2 border-t-2 border-primary/30 pointer-events-none" />
