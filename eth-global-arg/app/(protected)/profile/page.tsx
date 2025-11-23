@@ -12,7 +12,16 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
-import { useIsUsernameAvailable, useGetPriceOfRegistration, useFindAvailableNonce, useNameServiceSignatureBuilder, usePreRegisterUsername, useRegisterUsername } from "@/hooks/useEvvmNameService"
+import {
+  useIsUsernameAvailable,
+  useGetPriceOfRegistration,
+  useFindAvailableNonce,
+  useNameServiceSignatureBuilder,
+  usePreRegisterUsername,
+  useRegisterUsername,
+  useGetOwnerOfIdentity,
+  useVerifyIfIdentityExists,
+} from "@/hooks/useEvvmNameService"
 import { useGetAllPoapsByAddress } from "@/services/api/poap"
 import { useGetProfileTalentProtocol } from "@/services/api/talent-protocol"
 import { ConnectButton } from "@rainbow-me/rainbowkit"
@@ -26,7 +35,7 @@ import {
 import Link from "next/link"
 import { formatEther } from "viem"
 import { useAccount } from "wagmi"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { ProfileSkeleton } from "./profile-skeleton"
 import { PoapSkeleton } from "./poap-skeleton"
 
@@ -50,6 +59,12 @@ function NameServiceDialog({ address, skills }: NameServiceDialogProps) {
 
   const { price, isLoading: isPriceLoading } =
     useGetPriceOfRegistration(effectiveUsername)
+
+  const { exists, isLoading: isExistsLoading } =
+    useVerifyIfIdentityExists(effectiveUsername)
+
+  const { owner, isLoading: isOwnerLoading } =
+    useGetOwnerOfIdentity(effectiveUsername)
 
   const {
     nonce,
@@ -105,6 +120,28 @@ function NameServiceDialog({ address, skills }: NameServiceDialogProps) {
 
   const priceLabel =
     price && typeof price === "bigint" ? formatEther(price) : undefined
+
+  useEffect(() => {
+    if (!effectiveUsername) return
+    // Debug log to verify contract responses for availability vs existence
+    console.log("EVVM NameService debug", {
+      username: effectiveUsername,
+      isAvailable,
+      exists,
+      owner,
+      isAvailabilityLoading,
+      isExistsLoading,
+      isOwnerLoading,
+    })
+  }, [
+    effectiveUsername,
+    isAvailable,
+    exists,
+    owner,
+    isAvailabilityLoading,
+    isExistsLoading,
+    isOwnerLoading,
+  ])
 
   const handleCreate = async () => {
     if (!canSubmit || !address || !nonce || !price) {
@@ -244,6 +281,31 @@ function NameServiceDialog({ address, skills }: NameServiceDialogProps) {
             <p className="text-xs text-muted-foreground font-mono">
               Estimated registration fee: {priceLabel} ETH
             </p>
+          )}
+
+          {effectiveUsername && (
+            <div className="mt-2 rounded-md bg-card/30 border border-primary/10 p-2">
+              <p className="text-[10px] font-mono text-muted-foreground mb-1">
+                Debug (on-chain state)
+              </p>
+              <pre className="text-[10px] font-mono whitespace-pre-wrap break-all">
+                {JSON.stringify(
+                  {
+                    username: effectiveUsername,
+                    isAvailable,
+                    exists,
+                    owner,
+                    loading: {
+                      availability: isAvailabilityLoading,
+                      exists: isExistsLoading,
+                      owner: isOwnerLoading,
+                    },
+                  },
+                  null,
+                  2
+                )}
+              </pre>
+            </div>
           )}
 
           {error && (
