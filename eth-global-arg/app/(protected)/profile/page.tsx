@@ -54,16 +54,32 @@ function NameServiceDialog({ address, skills }: NameServiceDialogProps) {
 
   const effectiveUsername = open ? username.trim() : ""
 
-  const { isAvailable, isLoading: isAvailabilityLoading } =
+  const {
+    isAvailable,
+    isLoading: isAvailabilityLoading,
+    isError: isAvailabilityError,
+  } =
     useIsUsernameAvailable(effectiveUsername)
 
-  const { price, isLoading: isPriceLoading } =
+  const {
+    price,
+    isLoading: isPriceLoading,
+    isError: isPriceError,
+  } =
     useGetPriceOfRegistration(effectiveUsername)
 
-  const { exists, isLoading: isExistsLoading } =
+  const {
+    exists,
+    isLoading: isExistsLoading,
+    isError: isExistsError,
+  } =
     useVerifyIfIdentityExists(effectiveUsername)
 
-  const { owner, isLoading: isOwnerLoading } =
+  const {
+    owner,
+    isLoading: isOwnerLoading,
+    isError: isOwnerError,
+  } =
     useGetOwnerOfIdentity(effectiveUsername)
 
   const {
@@ -132,6 +148,9 @@ function NameServiceDialog({ address, skills }: NameServiceDialogProps) {
       isAvailabilityLoading,
       isExistsLoading,
       isOwnerLoading,
+      isAvailabilityError,
+      isExistsError,
+      isOwnerError,
     })
   }, [
     effectiveUsername,
@@ -141,6 +160,9 @@ function NameServiceDialog({ address, skills }: NameServiceDialogProps) {
     isAvailabilityLoading,
     isExistsLoading,
     isOwnerLoading,
+    isAvailabilityError,
+    isExistsError,
+    isOwnerError,
   ])
 
   const handleCreate = async () => {
@@ -299,6 +321,11 @@ function NameServiceDialog({ address, skills }: NameServiceDialogProps) {
                       availability: isAvailabilityLoading,
                       exists: isExistsLoading,
                       owner: isOwnerLoading,
+                    },
+                    error: {
+                      availability: isAvailabilityError,
+                      exists: isExistsError,
+                      owner: isOwnerError,
                     },
                   },
                   null,
