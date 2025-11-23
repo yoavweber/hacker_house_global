@@ -1,7 +1,7 @@
 import { useWriteContract, useReadContract } from "wagmi";
 import { abi } from "../constants/abi";
 
-const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3" as `0x${string}`;
+const contractAddress = "0x100D63C951d5c3f0EAc725a739a4e858F55ccf1b" as `0x${string}`;
 
 /**
  * Hook for creating a new team
