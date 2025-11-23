@@ -5,7 +5,7 @@ import { readContract } from "viem/actions";
 import { evvmAbi } from "../constants/evvmAbi";
 import { useState } from "react";
 
-const nameServiceAddress = "0xYourNameServiceContractAddress"; // Replace with actual address
+const nameServiceAddress = "0x96f056d268060de7f0fce56193fa480c342e94bd"; // Replace with actual address
 
 // 1. Check availability (read-only RPC)
 export const useIsUsernameAvailable = (username: string) => {
