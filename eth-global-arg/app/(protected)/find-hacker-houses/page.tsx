@@ -401,18 +401,6 @@ export default function FindHackerHousesPage() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
                       <div className="bg-card/20 border border-primary/10 rounded-md p-3">
                         <div className="flex items-center gap-2 mb-1">
-                          <DollarSign className="h-4 w-4 text-chart-3" />
-                          <p className="text-xs text-muted-foreground font-mono uppercase">
-                            Monthly Budget
-                          </p>
-                        </div>
-                        <p className="text-xl font-bold text-chart-3 font-mono">
-                          ${house.monthlyBudget}
-                        </p>
-                      </div>
-
-                      <div className="bg-card/20 border border-primary/10 rounded-md p-3">
-                        <div className="flex items-center gap-2 mb-1">
                           <Users className="h-4 w-4 text-chart-2" />
                           <p className="text-xs text-muted-foreground font-mono uppercase">
                             Host
@@ -530,18 +518,6 @@ export default function FindHackerHousesPage() {
 
                     {/* Details Grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-                      <div className="bg-card/20 border border-primary/10 rounded-md p-3">
-                        <div className="flex items-center gap-2 mb-1">
-                          <DollarSign className="h-4 w-4 text-chart-3" />
-                          <p className="text-xs text-muted-foreground font-mono uppercase">
-                            Monthly Budget
-                          </p>
-                        </div>
-                        <p className="text-xl font-bold text-chart-3 font-mono">
-                          ${house.monthlyBudget}
-                        </p>
-                      </div>
-
                       <div className="bg-card/20 border border-primary/10 rounded-md p-3">
                         <div className="flex items-center gap-2 mb-1">
                           <Users className="h-4 w-4 text-chart-2" />
@@ -757,14 +733,6 @@ export default function FindHackerHousesPage() {
                             View on Airbnb
                             <ExternalLink className="h-4 w-4" />
                           </a>
-                          <button
-                            onClick={() => {
-                              console.log("Book house:", house.id)
-                            }}
-                            className="flex-1 flex items-center justify-center gap-2 bg-chart-2 hover:bg-chart-2/80 text-primary-foreground font-mono text-sm h-10 rounded-md shadow-[0_0_15px_rgba(var(--chart-2),0.3)] hover:shadow-[0_0_25px_rgba(var(--chart-2),0.5)] transition-all"
-                          >
-                            Book Now
-                          </button>
                         </div>
                       </div>
                     </div>
