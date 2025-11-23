@@ -29,6 +29,7 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
+import { useGetAllHackerHouses } from "@/services/api/hacker-houses"
 
 interface HackerHouse {
   id: string
@@ -171,6 +172,9 @@ export default function FindHackerHousesPage() {
   const searchParams = useSearchParams()
   const location = searchParams.get("location")
   const event = searchParams.get("event")
+
+  const { data } = useGetAllHackerHouses()
+  console.log("data", data)
 
   // Filter states
   const [selectedCity, setSelectedCity] = useState<string>("all")
