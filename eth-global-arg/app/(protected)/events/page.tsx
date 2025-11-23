@@ -15,7 +15,7 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import { useEffect, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 
 // Mock data - replace with real API data later
 const mockEvents = [
@@ -192,7 +192,7 @@ const mockEvents = [
   },
 ]
 
-export default function EventsPage() {
+function EventsContent() {
   const searchParams = useSearchParams()
   const locationParam = searchParams.get("location")
 
@@ -451,5 +451,13 @@ export default function EventsPage() {
         </ScrollArea>
       )}
     </div>
+  )
+}
+
+export default function EventsPage() {
+  return (
+    <Suspense fallback={<div className="min-h-dvh max-w-6xl mx-auto p-4">Loading...</div>}>
+      <EventsContent />
+    </Suspense>
   )
 }

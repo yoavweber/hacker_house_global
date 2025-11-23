@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, Suspense } from "react"
 import { BackButton } from "@/components/back-button"
 import { PageHeader } from "@/components/page-header"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -100,7 +100,7 @@ const AVAILABLE_CITIES = [
   "Pyongyang",
 ]
 
-export default function FindHackerHousesPage() {
+function FindHackerHousesContent() {
   const searchParams = useSearchParams()
   const location = searchParams.get("location")
   const event = searchParams.get("event")
@@ -287,5 +287,13 @@ export default function FindHackerHousesPage() {
         </TabsContent>
       </Tabs>
     </div>
+  )
+}
+
+export default function FindHackerHousesPage() {
+  return (
+    <Suspense fallback={<div className="min-h-dvh max-w-6xl mx-auto p-4">Loading...</div>}>
+      <FindHackerHousesContent />
+    </Suspense>
   )
 }

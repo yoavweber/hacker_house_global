@@ -9,7 +9,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Code2, MapPin, MessageSquare, Users, Zap } from "lucide-react"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import { useEffect, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 
 // Mock data - replace with real API data later
 const mockHackers = [
@@ -75,7 +75,7 @@ const mockHackers = [
   },
 ]
 
-export default function FindHackersPage() {
+function FindHackersContent() {
   const searchParams = useSearchParams()
   const locationParam = searchParams.get("location")
   const eventParam = searchParams.get("event")
@@ -290,5 +290,13 @@ export default function FindHackersPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function FindHackersPage() {
+  return (
+    <Suspense fallback={<div className="min-h-dvh max-w-6xl mx-auto p-4">Loading...</div>}>
+      <FindHackersContent />
+    </Suspense>
   )
 }

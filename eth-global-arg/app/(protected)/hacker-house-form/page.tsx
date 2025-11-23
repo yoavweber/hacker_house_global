@@ -20,7 +20,7 @@ import {
 import { Calendar as CalendarIcon, Home, MapPin, Users } from "lucide-react"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import { useState } from "react"
+import { Suspense, useState } from "react"
 import { format } from "date-fns"
 
 const availableTags = [
@@ -38,7 +38,7 @@ const availableTags = [
   "Testing",
 ]
 
-export default function HackerHouseFormPage() {
+function HackerHouseFormContent() {
   const searchParams = useSearchParams()
   const locationParam = searchParams.get("location")
   const eventParam = searchParams.get("event")
@@ -384,5 +384,13 @@ export default function HackerHouseFormPage() {
         </div>
       </form>
     </div>
+  )
+}
+
+export default function HackerHouseFormPage() {
+  return (
+    <Suspense fallback={<div className="min-h-dvh max-w-2xl mx-auto p-4">Loading...</div>}>
+      <HackerHouseFormContent />
+    </Suspense>
   )
 }
